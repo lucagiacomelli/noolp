@@ -1,9 +1,30 @@
+'''
+Copyright 2017.
+All rights reserved.
+
+Topic modelling for the BBC_RSS Stories.
+
+Author: luca.giacomelli@covatic.com (Luca Giacomelli)
+'''
+import time
+import pymongo  
+import numpy as np
+from constants import *
+
 import pickle
 import gensim
 from sklearn.feature_extraction.text import CountVectorizer
 import re
 
-class TopicModelling:
+import nltk
+from nltk.corpus import stopwords 
+from nltk.stem.wordnet import WordNetLemmatizer
+import string
+import gensim
+from gensim import corpora
+
+
+class TopicModeller:
 
     def __init__(self, documents):
         self.documents = documents
@@ -58,3 +79,140 @@ class TopicModelling:
         
         result = list_of_list[0]
         return result
+
+
+
+'''
+Class dedicated to Topic Modelling:
+starting from a document (a story) we find a set of topics with related probabilities
+'''
+class TopicModeller2:
+
+    def __init__(self, name, number_topics=3, 
+                        number_passes=50, 
+                        words_per_topic=3):
+        self.name = name
+        self.number_topics = number_topics
+        self.number_passes = number_passes
+        self.words_per_topic = words_per_topic
+
+    '''
+    Cleaning stories from BBC:
+    - We remove pronouns
+    - We remove the 'Read more' part at the end 
+    @Return a string
+    '''
+    def clean_story(self, story):
+        story = story.decode('utf8')
+
+        # Handle the case with .I, .You, .It, .He, .She, .We, .They
+        story = story.replace(".I ", ". I ")
+        story = story.replace(".You ", ". You ")
+        story = story.replace(".He ", ". He ")
+        story = story.replace(".She ", ". she ")
+        story = story.replace(".It ", ". It ")
+        story = story.replace(".We ", ". We ")
+        story = story.replace(".They ", ". They ")
+        
+        # Remove the 'Read More' part from the story
+        if "Read more" in story:
+            index_read_more = story.index("Read more")
+            story = story[:index_read_more]
+
+        return story
+
+    '''
+    Extract tokens from a sentence,
+    removing English stopwords and punctuations
+    @Return a list of tokens (strings)
+    '''
+    def get_tokens(self, sentence):
+        stop = set(stopwords.words('english'))
+        punctuation = set(string.punctuation)
+        punctuation.update(["''", "``", "'s"])
+
+        tokens = nltk.word_tokenize(sentence)
+        tokens_pos = nltk.pos_tag(tokens)
+
+        stop_free = [i for i in tokens_pos if i[0] not in stop]
+        punc_free = [ch for ch in stop_free if ch[0] not in punctuation]
+        return punc_free
+
+    '''
+    Extract sentence from a given story
+    @Return a list of sentences
+    '''
+    def extract_sentences(self, story):
+        sentences = nltk.sent_tokenize(story)
+        return sentences
+
+
+    '''
+    @Return a list of cleaned and lemmatized documents (sentences - strings)
+    '''
+    def lemmatize_story(self, story):
+        story = self.clean_story(story)
+        
+        lemmatizer = WordNetLemmatizer()
+        normalized_sentences = []
+        for sentence in self.extract_sentences(story):
+            tokens_pos = self.get_tokens(sentence)
+            list_lemmas = [lemmatizer.lemmatize(word, pos=self.getPosTagForLemmatization(pos)) for word, pos in tokens_pos]
+            normalized_sentence = [lemma for lemma in list_lemmas if lemma not in Constants.reporting_verbs]
+            normalized_sentences.append(normalized_sentence)
+
+        #print "\nNormalized sentences: "
+        #for norm_doc in normalized_sentences:
+        #       print norm_doc
+
+        return normalized_sentences
+
+
+    '''
+    Auxiliary method:
+    convert the POS tag into the character as parameter for the lemmatization
+    @Return a character
+    '''
+    def getPosTagForLemmatization(self, POS):
+        if POS.startswith("NN"):
+            return 'n'
+        elif POS.startswith("VB"):
+            return 'v'
+        elif POS.startswith("JJ"):
+            return 'a'
+        else: return 'n'
+
+
+
+    '''
+    Extract topics from a story using
+    Latent Dirichlet Allocation. We calculate the document-term matrix
+    and apply the LDA model.
+    @Return a list of tuples where erach tuple has a set of relevant words for the topic
+    '''
+    def get_LDA_topics(self, documents):
+
+        # Creating the term dictionary of our courpus, where every unique term is assigned an index. 
+        dictionary = corpora.Dictionary(documents)
+
+        # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
+        doc_term_matrix = [dictionary.doc2bow(doc) for doc in documents]
+
+        # Creating the object for LDA model
+        Lda = gensim.models.ldamodel.LdaModel
+
+        # Running and Trainign LDA model on the document term matrix.
+        #print len(documents)
+
+        #chunksize = len(documents)/5
+        ldamodel = Lda(doc_term_matrix, num_topics=self.number_topics, id2word = dictionary, passes=self.number_passes)
+
+        return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic,  formatted=False)
+ 
+
+    def extract_topics(self, story):
+        #print "Initial story: ", story
+        #print '\n'
+        lemmatized_documents = self.lemmatize_story(story)
+        topics = self.get_LDA_topics(lemmatized_documents)
+        return topics
