@@ -17,3 +17,9 @@ import nltk
 nltk.download()
 ```
 and select **popular** under the **Collections** section.
+
+
+## Run the example 
+To run the script clone the repo and:
+
+    python main.py
