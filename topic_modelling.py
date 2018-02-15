@@ -2,7 +2,7 @@
 Copyright 2017.
 All rights reserved.
 
-Topic modelling for the BBC_RSS Stories.
+Topic modelling of a general story.
 
 Author: luca.giacomelli@covatic.com (Luca Giacomelli)
 '''
