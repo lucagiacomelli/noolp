@@ -1,4 +1,19 @@
 # TopicModelling
-Assignment in the Advanced Data Science Course - Applied Text Mining, from University of Michigan.
+This repo show how to extract topics from a text using LDA Models in Python. \
+We also face the Document similarity problems, central NLP tasks.
 
-We face the Document similarity and Topic Modelling problems, central NLP tasks.
+## Dependencies
+Here the libraries that are necessary in this project: \
+[numpy](https://pypi.python.org/pypi/numpy) \
+[sklearn](http://scikit-learn.org/stable/install.html) \
+[matplotlib](https://matplotlib.org) \
+[gensim](https://github.com/RaRe-Technologies/gensim) \
+[nltk](http://www.nltk.org)
+
+Download the popular packages of nltk. To do it, execute the following script:
+```
+python
+import nltk
+nltk.download()
+```
+and select **popular** under the **Collections** section.
