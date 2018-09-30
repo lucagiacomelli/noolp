@@ -1,5 +1,5 @@
 from doc_similarity import DocSimilarity
-from topic_modelling import TopicModeller2
+from topic_modelling import TopicModeller
 
 print('\nHello in Document Similarity and Topic Modelling!!\n')
 
@@ -30,7 +30,7 @@ doc_sim = DocSimilarity(doc1, doc2)
 
 print(doc_sim.document_path_similarity())
 
-topicModeller = TopicModeller2("topic modeller 1")
+topicModeller = TopicModeller("topic modeller 1")
 print(topicModeller.extract_topics(story))
 
 
