@@ -6,22 +6,16 @@ Topic modelling of a general story.
 
 Author: luca.giacomelli@covatic.com (Luca Giacomelli)
 '''
-import time
-import pymongo  
-import numpy as np
-from constants import *
-
-import pickle
-import gensim
-from sklearn.feature_extraction.text import CountVectorizer
-import re
-
-import nltk
-from nltk.corpus import stopwords 
-from nltk.stem.wordnet import WordNetLemmatizer
 import string
+
 import gensim
+import nltk
 from gensim import corpora
+from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
+from sklearn.feature_extraction.text import CountVectorizer
+
+from constants import *
 
 
 class TopicModeller:
@@ -29,16 +23,16 @@ class TopicModeller:
     def __init__(self, documents):
         self.documents = documents
 
-    def LDA_model():
-        vect = CountVectorizer(min_df=20, max_df=0.2, stop_words='english', 
-                       token_pattern='(?u)\\b\\w\\w\\w+\\b')
+    def LDA_model(self):
+        vect = CountVectorizer(min_df=20, max_df=0.2, stop_words='english',
+                               token_pattern='(?u)\\b\\w\\w\\w+\\b')
         # Fit and transform
         X = vect.fit_transform(self.documents)
 
         print(X.shape)
         ## We have 2000 documents and 901 terms (tokens) that appear in at least 20
         ## documents and have at least 3 letters
-        #print(X)
+        # print(X)
 
         # Convert sparse matrix to gensim corpus.
         corpus = gensim.matutils.Sparse2Corpus(X, documents_columns=False)
@@ -48,7 +42,6 @@ class TopicModeller:
         ldamodel = gensim.models.ldamodel.LdaModel(corpus, id2word=id_map, num_topics=10, passes=25, random_state=34)
 
         return ldamodel
-    
 
     def LDA_topics(ldamodel):
         result = []
@@ -65,7 +58,6 @@ class TopicModeller:
         '''
         #
         return ldamodel.print_topics(num_topics=10, num_words=10)
-    
 
     def topic_distribution(doc):
         # Fit and transform
@@ -73,24 +65,25 @@ class TopicModeller:
         X1 = vect.transform(doc)
         corpus2 = gensim.matutils.Sparse2Corpus(X1, documents_columns=False)
         ldamodel2 = gensim.models.ldamodel.LdaModel(corpus2, id2word=id_map, num_topics=10, passes=25, random_state=34)
-        #id_map = dict((v, k) for k, v in vect.vocabulary_.items())
-        #ldamodel.update(corpus2)
+        # id_map = dict((v, k) for k, v in vect.vocabulary_.items())
+        # ldamodel.update(corpus2)
         list_of_list = list(ldamodel2.get_document_topics(corpus2))
-        
+
         result = list_of_list[0]
         return result
-
 
 
 '''
 Class dedicated to Topic Modelling:
 starting from a document (a story) we find a set of topics with related probabilities
 '''
+
+
 class TopicModeller2:
 
-    def __init__(self, name, number_topics=3, 
-                        number_passes=50, 
-                        words_per_topic=3):
+    def __init__(self, name, number_topics=3,
+                 number_passes=50,
+                 words_per_topic=3):
         self.name = name
         self.number_topics = number_topics
         self.number_passes = number_passes
@@ -102,8 +95,9 @@ class TopicModeller2:
     - We remove the 'Read more' part at the end 
     @Return a string
     '''
+
     def clean_story(self, story):
-        story = story.decode('utf8')
+        #story = story.decode('utf8')
 
         # Handle the case with .I, .You, .It, .He, .She, .We, .They
         story = story.replace(".I ", ". I ")
@@ -113,7 +107,7 @@ class TopicModeller2:
         story = story.replace(".It ", ". It ")
         story = story.replace(".We ", ". We ")
         story = story.replace(".They ", ". They ")
-        
+
         # Remove the 'Read More' part from the story
         if "Read more" in story:
             index_read_more = story.index("Read more")
@@ -146,27 +140,26 @@ class TopicModeller2:
         sentences = nltk.sent_tokenize(story)
         return sentences
 
-
     '''
     @Return a list of cleaned and lemmatized documents (sentences - strings)
     '''
     def lemmatize_story(self, story):
         story = self.clean_story(story)
-        
+
         lemmatizer = WordNetLemmatizer()
         normalized_sentences = []
         for sentence in self.extract_sentences(story):
             tokens_pos = self.get_tokens(sentence)
-            list_lemmas = [lemmatizer.lemmatize(word, pos=self.getPosTagForLemmatization(pos)) for word, pos in tokens_pos]
+            list_lemmas = [lemmatizer.lemmatize(word, pos=self.getPosTagForLemmatization(pos)) for word, pos in
+                           tokens_pos]
             normalized_sentence = [lemma for lemma in list_lemmas if lemma not in Constants.reporting_verbs]
             normalized_sentences.append(normalized_sentence)
 
-        #print "\nNormalized sentences: "
-        #for norm_doc in normalized_sentences:
+        # print "\nNormalized sentences: "
+        # for norm_doc in normalized_sentences:
         #       print norm_doc
 
         return normalized_sentences
-
 
     '''
     Auxiliary method:
@@ -180,9 +173,8 @@ class TopicModeller2:
             return 'v'
         elif POS.startswith("JJ"):
             return 'a'
-        else: return 'n'
-
-
+        else:
+            return 'n'
 
     '''
     Extract topics from a story using
@@ -202,17 +194,16 @@ class TopicModeller2:
         Lda = gensim.models.ldamodel.LdaModel
 
         # Running and Trainign LDA model on the document term matrix.
-        #print len(documents)
+        # print len(documents)
 
-        #chunksize = len(documents)/5
-        ldamodel = Lda(doc_term_matrix, num_topics=self.number_topics, id2word = dictionary, passes=self.number_passes)
+        # chunksize = len(documents)/5
+        ldamodel = Lda(doc_term_matrix, num_topics=self.number_topics, id2word=dictionary, passes=self.number_passes)
 
-        return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic,  formatted=False)
- 
+        return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
 
     def extract_topics(self, story):
-        #print "Initial story: ", story
-        #print '\n'
+        # print "Initial story: ", story
+        # print '\n'
         lemmatized_documents = self.lemmatize_story(story)
         topics = self.get_LDA_topics(lemmatized_documents)
         return topics

@@ -12,7 +12,7 @@ Here the libraries that are necessary in this project: \
 
 Download the popular packages of nltk. To do it, execute the following script:
 ```
-python
+python3
 import nltk
 nltk.download()
 ```
@@ -22,4 +22,4 @@ and select **popular** under the **Collections** section.
 ## Run the example 
 To run the script clone the repo and:
 
-    python main.py
+    python3 main.py
