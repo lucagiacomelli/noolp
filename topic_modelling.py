@@ -14,6 +14,10 @@ from gensim import corpora
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
+from sklearn.pipeline import Pipeline
+
 from constants import *
 
 '''
@@ -123,16 +127,41 @@ class TopicModeller:
         else:
             return 'n'
 
+
+    """
+    The core idea of the Latent Semantic Analysis is to generate a document-term matrix
+    and decompose it into two matrices: document-topic and topic-term.
+    Document-term matrix: how many times the term j appears in the document i.
+    Because this matrix is sparse, we need a dimensionality reduction on the matrix. We do that
+    with the Singular Value Decomposition (SVD)
+    """
+
+    def get_LSA_topics(self, documents):
+
+        # raw documents to tf-idf matrix:
+        vectorizer = TfidfVectorizer(stop_words='english',
+                                     use_idf=True,
+                                     smooth_idf=True)
+
+        svd_model = TruncatedSVD(n_components=100, algorithm='randomized', n_iter=10)
+
+        svd_transformer = Pipeline([('tfidf', vectorizer),
+                                    ('svd', svd_model)])
+        svd_matrix = svd_transformer.fit_transform(documents)
+
+        # use the matrix to find topics and similarities
+        return
+
     '''
-    Extract topics from a story using
-    Latent Dirichlet Allocation. We calculate the document-term matrix
-    and apply the LDA model.
-    @Return a list of tuples where erach tuple has a set of relevant words for the topic
-    '''
+       Extract topics from a story using
+       Latent Dirichlet Allocation. We calculate the document-term matrix
+       and apply the LDA model.
+       @Return a list of tuples where erach tuple has a set of relevant words for the topic
+       '''
 
     def get_LDA_topics(self, documents):
 
-        # Creating the term dictionary of our courpus, where every unique term is assigned an index. 
+        # Creating the term dictionary of our courpus, where every unique term is assigned an index.
         dictionary = corpora.Dictionary(documents)
 
         # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
@@ -149,7 +178,15 @@ class TopicModeller:
 
         return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
 
+    def get_LDA2Vec(self, documents):
+        # https: // github.com / cemoody / lda2vec
+        return
+
     def extract_topics(self, story):
         lemmatized_documents = self.lemmatize_story(story)
         topics = self.get_LDA_topics(lemmatized_documents)
+
+        sentences = self.extract_sentences(story)
+        lsa_topics = self.get_LSA_topics(sentences)
+
         return topics
