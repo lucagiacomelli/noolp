@@ -1,6 +1,5 @@
-# TopicModelling
-This repo show how to extract topics from a text using LDA Models in Python. \
-We also face the Document similarity problems, central Natural Language Processing tasks.
+# Noolp
+Natural Language Processing library.
 
 ## Dependencies
 Here the libraries used this project:
@@ -36,5 +35,4 @@ To run the script clone the repo and:
 python3 main.py
 ```
 
-
-   
+##

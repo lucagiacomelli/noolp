@@ -1,4 +1,6 @@
-from doc_similarity import DocSimilarity
+from typing import Optional
+
+from document_similarity.wordnet_path_similarity import WordNetPathSimilarity
 from topic_modelling import TopicModeller
 
 print("\nWelcome to Document Similarity and Topic Modelling!!\n")
@@ -26,11 +28,27 @@ story = (
     "take any unnecessary risks or infringe any laws. Please ensure you have read the terms and conditions. "
 )
 
-print(f"document1: {doc1}")
-print(f"document2: {doc2}")
-doc_sim = DocSimilarity(doc1, doc2)
 
-print(doc_sim.document_path_similarity())
+class App:
 
-# topicModeller = TopicModeller("topic modeller 1")
-# print(topicModeller.extract_topics(story))
+    TYPE_SIMILARITY_DICT = {"path_similarity": WordNetPathSimilarity}
+    DEFAULT_SIMILARITIES = list(TYPE_SIMILARITY_DICT.keys())
+
+    def get_similarities(self, document1: str, document2: str, similarity_types: Optional[list] = None) -> dict:
+        print(f"document1: {document1}")
+        print(f"document2: {document2}")
+
+        if not similarity_types:
+            similarity_types = self.DEFAULT_SIMILARITIES
+        similarities = {}
+        for similarity_type in similarity_types:
+            similarities[similarity_type] = self.TYPE_SIMILARITY_DICT[similarity_type](document1=document1, document2=document2).get_similarity()
+
+        return similarities
+
+
+app = App()
+doc_sim = app.get_similarities(document1=doc1, document2=doc2)
+
+topicModeller = TopicModeller("topic modeller 1")
+print(f"Topics extracted: {topicModeller.extract_topics(story)}")
