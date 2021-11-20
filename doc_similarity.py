@@ -2,11 +2,10 @@ import nltk
 from nltk.corpus import wordnet as wn
 
 
-# Auxiliary method
 def convert_tag(tag):
     """Convert the tag given by nltk.pos_tag to the tag used by wordnet.synsets"""
 
-    tag_dict = {'N': 'n', 'J': 'a', 'R': 'r', 'V': 'v'}
+    tag_dict = {"N": "n", "J": "a", "R": "r", "V": "v"}
     try:
         return tag_dict[tag[0]]
     except KeyError:
@@ -14,55 +13,54 @@ def convert_tag(tag):
 
 
 class DocSimilarity:
-
-    def __init__(self, doc1, doc2):
-        self.doc1 = doc1
-        self.doc2 = doc2
+    """
+    This class is responsible for finding the document similarity between two documents.
 
     """
-    Returns a list of synsets in document.
-    Tokenize and tag the words in the document doc.
-    Then finds the first synset for each word/tag combination.
-    If a synset is not found for that combination it is skipped.
 
-    Args:
-        doc: string to be converted
+    def __init__(self, document1: str, document2: str):
+        self.doc1 = document1
+        self.doc2 = document2
 
-    Returns:
-        list of synsets
+    def doc_to_synsets(self, document: str) -> list:
+        """
+        Returns a list of WordNet synsets in document.
 
-    Example:
-        doc_to_synsets('Fish are nvqjp friends.')
-        Out: [Synset('fish.n.01'), Synset('be.v.01'), Synset('friend.n.01')]
-    """
-    def doc_to_synsets(self, doc):
-        tokens = nltk.word_tokenize(doc)
+        * Tokenize and tag the words in the document doc.
+        * Find the first synset for each word/tag combination. If a synset is not found for that combination it is skipped.
+
+        :param document: string to be converted
+        :return list of synsets [Synset('fish.n.01'), Synset('be.v.01'), Synset('friend.n.01')]
+
+        """
+
+        tokens = nltk.word_tokenize(document)
         tagger = nltk.pos_tag(tokens)
-        synsets = []
+        synsets: list = []
         for word, pos in tagger:
             try:
                 all_synsets = wn.synsets(word, convert_tag(pos))
                 if len(all_synsets) > 0:
                     synsets.append(all_synsets[0])
-            except:
+            except Exception:
                 continue
-
         return synsets
 
-    """
-    Calculate the normalized similarity score of s1 onto s2
+    def similarity_score(self, synset_list_1: list, synset_list_2: list):
+        """
+        Calculate the normalized similarity score of s1 onto s2
 
-    For each synset in s1, finds the synset in s2 with the largest similarity value.
-    Sum of all of the largest similarity values and normalize this value by dividing it by the
-    number of largest similarity values found.
-    """
+        For each synset in s1, finds the synset in s2 with the largest similarity value.
+        Sum of all of the largest similarity values and normalize this value by dividing it by the
+        number of largest similarity values found.
 
-    def similarity_score(self, s1, s2):
+        """
+
         largest_similarity_values = []
-        for syn in s1:
+        for syn in synset_list_1:
             max_similarity = 0.0
-            for syn2 in s2:
-                if syn.path_similarity(syn2) != None and syn.path_similarity(syn2) > max_similarity:
+            for syn2 in synset_list_2:
+                if syn.path_similarity(syn2) is not None and syn.path_similarity(syn2) > max_similarity:
                     max_similarity = syn.path_similarity(syn2)
 
             if max_similarity != 0.0:

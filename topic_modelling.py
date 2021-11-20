@@ -1,11 +1,3 @@
-'''
-Copyright 2017.
-All rights reserved.
-
-Topic modelling of a general story.
-
-Author: luca.giacomelli@covatic.com (Luca Giacomelli)
-'''
 import string
 
 import gensim
@@ -20,28 +12,13 @@ from sklearn.pipeline import Pipeline
 
 from constants import *
 
-'''
-Class dedicated to Topic Modelling:
-starting from a document (a story) we find a set of topics with related probabilities
-'''
-
 
 class TopicModeller:
-
-    def __init__(self, name, number_topics=3,
-                 number_passes=50,
-                 words_per_topic=3):
+    def __init__(self, name, number_topics=3, number_passes=50, words_per_topic=3):
         self.name = name
         self.number_topics = number_topics
         self.number_passes = number_passes
         self.words_per_topic = words_per_topic
-
-    '''
-    Cleaning stories from BBC:
-    - We remove pronouns
-    - We remove the 'Read more' part at the end 
-    @Return a string
-    '''
 
     def clean_story(self, story):
         # story = story.decode('utf8')
@@ -62,14 +39,14 @@ class TopicModeller:
 
         return story
 
-    '''
+    """
     Extract tokens from a sentence,
     removing English stopwords and punctuations
     @Return a list of tokens (strings)
-    '''
+    """
 
     def get_tokens(self, sentence):
-        stop = set(stopwords.words('english'))
+        stop = set(stopwords.words("english"))
         punctuation = set(string.punctuation)
         punctuation.update(["''", "``", "'s"])
 
@@ -80,53 +57,41 @@ class TopicModeller:
         punc_free = [ch for ch in stop_free if ch[0] not in punctuation]
         return punc_free
 
-    '''
-    Extract sentence from a given story
-    @Return a list of sentences
-    '''
-
     def extract_sentences(self, story):
+        """
+        Extract sentence from a given story
+        :param story:
+
+        """
         sentences = nltk.sent_tokenize(story)
         return sentences
 
-    '''
-    @Return a list of cleaned and lemmatized documents (sentences - strings)
-    '''
-
     def lemmatize_story(self, story):
+        """
+
+        :return a list of cleaned and lemmatized documents (sentences - strings)
+        """
         story = self.clean_story(story)
 
         lemmatizer = WordNetLemmatizer()
         normalized_sentences = []
         for sentence in self.extract_sentences(story):
             tokens_pos = self.get_tokens(sentence)
-            list_lemmas = [lemmatizer.lemmatize(word, pos=self.getPosTagForLemmatization(pos)) for word, pos in
-                           tokens_pos]
+            list_lemmas = [lemmatizer.lemmatize(word, pos=self.get_pos_tag_for_lemmatization(pos)) for word, pos in tokens_pos]
             normalized_sentence = [lemma for lemma in list_lemmas if lemma not in Constants.reporting_verbs]
             normalized_sentences.append(normalized_sentence)
 
-        # print "\nNormalized sentences: "
-        # for norm_doc in normalized_sentences:
-        #       print norm_doc
-
         return normalized_sentences
 
-    '''
-    Auxiliary method:
-    convert the POS tag into the character as parameter for the lemmatization
-    @Return a character
-    '''
-
-    def getPosTagForLemmatization(self, POS):
+    def get_pos_tag_for_lemmatization(self, POS):
         if POS.startswith("NN"):
-            return 'n'
+            return "n"
         elif POS.startswith("VB"):
-            return 'v'
+            return "v"
         elif POS.startswith("JJ"):
-            return 'a'
+            return "a"
         else:
-            return 'n'
-
+            return "n"
 
     """
     The core idea of the Latent Semantic Analysis is to generate a document-term matrix
@@ -139,25 +104,22 @@ class TopicModeller:
     def get_LSA_topics(self, documents):
 
         # raw documents to tf-idf matrix:
-        vectorizer = TfidfVectorizer(stop_words='english',
-                                     use_idf=True,
-                                     smooth_idf=True)
+        vectorizer = TfidfVectorizer(stop_words="english", use_idf=True, smooth_idf=True)
 
-        svd_model = TruncatedSVD(n_components=100, algorithm='randomized', n_iter=10)
+        svd_model = TruncatedSVD(n_components=100, algorithm="randomized", n_iter=10)
 
-        svd_transformer = Pipeline([('tfidf', vectorizer),
-                                    ('svd', svd_model)])
+        svd_transformer = Pipeline([("tfidf", vectorizer), ("svd", svd_model)])
         svd_matrix = svd_transformer.fit_transform(documents)
 
         # use the matrix to find topics and similarities
         return
 
-    '''
+    """
        Extract topics from a story using
        Latent Dirichlet Allocation. We calculate the document-term matrix
        and apply the LDA model.
        @Return a list of tuples where erach tuple has a set of relevant words for the topic
-       '''
+       """
 
     def get_LDA_topics(self, documents):
 
