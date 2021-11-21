@@ -12,7 +12,3 @@ class TestDocSimilarity:
     def instance(self):
         return DocSimilarity(document1=self.doc1, document2=self.doc2)
 
-
-    def test_tokenize(self, instance):
-        assert instance.tokenize_document(document=doc1)
-
