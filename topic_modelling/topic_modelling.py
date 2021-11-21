@@ -78,12 +78,9 @@ class TopicModeller:
         parser = ParserBase(document=story)
         lemmas_sentences = parser.lemmatize(include_stop_words=False, include_punctuation=False)
 
-        print(lemmas_sentences)
         for lemmas_sentence in lemmas_sentences:
             sentence_with_only_lemmas = " ".join(lemmas_sentence)
             normalized_sentences.append(sentence_with_only_lemmas)
-
-        print(normalized_sentences)
 
         return normalized_sentences
 
@@ -98,7 +95,6 @@ class TopicModeller:
         print(len(feature_names))
         print(feature_names)
         return tdf_idf_vectors
-
 
     """
     The core idea of the Latent Semantic Analysis is to generate a document-term matrix
@@ -147,11 +143,14 @@ class TopicModeller:
 
         return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
 
-    def extract_topics(self, story):
-        lemmatized_sentences = self.lemmatize_story(story)
-        print(lemmatized_sentences)
+    def extract_topics(self, story, use_lemmatization: bool = True):
 
-        tdf_idf_vectors = self.tdf_idf_vectorize(sentences=lemmatized_sentences)
+        if use_lemmatization:
+            sentences = self.lemmatize_story(story)
+        else:
+            sentences = ParserBase(document=story).extract_sentences()
+
+        tdf_idf_vectors = self.tdf_idf_vectorize(sentences=sentences)
 
         # topics = self.get_LDA_topics(lemmatized_sentences)
 

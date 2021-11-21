@@ -33,7 +33,6 @@ story = (
 class App:
 
     TYPE_SIMILARITY_DICT = {"path_similarity": WordNetPathSimilarity, "jaccard_similarity": JaccardSimilarity}
-    # TYPE_SIMILARITY_DICT = {"jaccard_similarity": JaccardSimilarity}
     DEFAULT_SIMILARITIES = list(TYPE_SIMILARITY_DICT.keys())
 
     def get_similarities(self, document1: str, document2: str, similarity_types: Optional[list] = None) -> dict:

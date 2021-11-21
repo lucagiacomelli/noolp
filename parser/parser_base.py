@@ -1,4 +1,5 @@
 import string
+from typing import List
 
 import nltk
 from nltk.corpus import stopwords
@@ -24,18 +25,18 @@ class ParserBase:
         punctuation_set.update(["''", "``", "'s"])
         return punctuation_set
 
-    def extract_sentences(self, story: str):
+    def extract_sentences(self):
         """
         Extract sentence from a given story
 
         """
-        sentences = nltk.sent_tokenize(story)
+        sentences = nltk.sent_tokenize(self.document)
         return sentences
 
-    def tokenize(self, include_stop_words: bool = True, include_punctuation: bool = True) -> list:
+    def tokenize(self, include_stop_words: bool = True, include_punctuation: bool = True) -> List[List[str]]:
         """"""
 
-        sentences = self.extract_sentences(self.document)
+        sentences = self.extract_sentences()
         tokens_sentences = []
         for sentence in sentences:
             tokens = nltk.word_tokenize(sentence)
@@ -50,7 +51,7 @@ class ParserBase:
 
         return tokens_sentences
 
-    def part_of_speech_tags(self, include_stop_words: bool = True, include_punctuation: bool = True) -> list:
+    def part_of_speech_tags(self, include_stop_words: bool = True, include_punctuation: bool = True) -> List[List[tuple]]:
         """"""
 
         tokens_sentences = self.tokenize()
@@ -68,12 +69,12 @@ class ParserBase:
 
         return pos_tags_sentences
 
-    def _get_pos_tag_for_lemmatization(self, POS):
-        if POS.startswith("NN"):
+    def _get_pos_tag_for_lemmatization(self, pos: str) -> str:
+        if pos.startswith("NN"):
             return "n"
-        elif POS.startswith("VB"):
+        elif pos.startswith("VB"):
             return "v"
-        elif POS.startswith("JJ"):
+        elif pos.startswith("JJ"):
             return "a"
         else:
             return "n"
@@ -90,5 +91,4 @@ class ParserBase:
                 list_lemmas = [lemma for lemma in list_lemmas if lemma not in Constants.reporting_verbs]
 
             lemmas_sentences.append(list_lemmas)
-
         return lemmas_sentences
