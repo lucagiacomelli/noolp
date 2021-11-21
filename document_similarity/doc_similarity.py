@@ -1,6 +1,3 @@
-import nltk
-
-
 class DocSimilarity:
     """
     Class responsible for finding the document similarity between two documents.

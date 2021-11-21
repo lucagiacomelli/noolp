@@ -1,12 +1,13 @@
 from typing import Optional
 
+from document_similarity.jaccard_similarity import JaccardSimilarity
 from document_similarity.wordnet_path_similarity import WordNetPathSimilarity
-from topic_modelling import TopicModeller
+from topic_modelling.topic_modelling import TopicModeller
 
 print("\nWelcome to Document Similarity and Topic Modelling!!\n")
 
 doc1 = "This is a function to test document_path_similarity."
-doc2 = "Use this function to see if your code in doc_to_synsets and similarity_score is correct!"
+doc2 = "Use this function to see if the similarity score is correct!"
 story = (
     'A number of Santander cash machines have been shut down due to "potential criminal activity and vandalism", '
     'the bank has said. Lancashire Police Santander said "five ATMs were shut down immediately" but cash machines '
@@ -31,7 +32,7 @@ story = (
 
 class App:
 
-    TYPE_SIMILARITY_DICT = {"path_similarity": WordNetPathSimilarity}
+    TYPE_SIMILARITY_DICT = {"path_similarity": WordNetPathSimilarity, "jaccard_similarity": JaccardSimilarity}
     DEFAULT_SIMILARITIES = list(TYPE_SIMILARITY_DICT.keys())
 
     def get_similarities(self, document1: str, document2: str, similarity_types: Optional[list] = None) -> dict:

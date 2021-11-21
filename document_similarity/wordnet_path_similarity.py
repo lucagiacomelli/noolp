@@ -38,7 +38,7 @@ class WordNetPathSimilarity(DocSimilarity):
         synsets: list = []
         for word, pos in pos_tags:
             try:
-                if word not in set(stop_words_set):
+                if word not in stop_words_set:
                     all_synsets = wn.synsets(word, self.convert_tag(pos))
                     if len(all_synsets) > 0:
                         synsets.extend(all_synsets[0:synset_per_word])
@@ -89,5 +89,5 @@ class WordNetPathSimilarity(DocSimilarity):
         synsets2 = self.doc_to_synsets(self.doc2)
 
         path_similarity = (self.similarity_score(synsets1, synsets2) + self.similarity_score(synsets2, synsets1)) / 2
-        print(f"Path Similarity between the documents: {path_similarity}")
+        print(f"\nPath Similarity between the documents: {path_similarity}")
         return path_similarity

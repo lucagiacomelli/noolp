@@ -25,7 +25,7 @@ python3
 import nltk
 nltk.download()
 ```
-and digit `popular` as identifier.
+choose Download (typing `d`) and then type `popular` to download the popular corpora.
 
 
 ## Run the example 
