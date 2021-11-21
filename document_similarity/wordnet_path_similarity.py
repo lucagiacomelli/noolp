@@ -5,6 +5,7 @@ from nltk.corpus import wordnet as wn
 
 
 from document_similarity.doc_similarity import DocSimilarity
+from parser.parser_base import ParserBase
 
 
 class WordNetPathSimilarity(DocSimilarity):
@@ -30,7 +31,8 @@ class WordNetPathSimilarity(DocSimilarity):
 
         """
 
-        pos_tags = self.part_of_speech_tags(document=document)
+        parser = ParserBase(document=document)
+        pos_tags = parser.part_of_speech_tags()
 
         stop_words_set = set(stopwords.words(self.language))
         synsets: list = []

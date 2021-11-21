@@ -6,7 +6,6 @@ Here the libraries used this project:
 - Python >= 3.7
 - [numpy](https://pypi.python.org/pypi/numpy) 
 - [sklearn](http://scikit-learn.org/stable/install.html)
-- [matplotlib](https://matplotlib.org)
 - [gensim](https://github.com/RaRe-Technologies/gensim)
 - [nltk](http://www.nltk.org)
 

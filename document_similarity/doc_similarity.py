@@ -13,13 +13,6 @@ class DocSimilarity:
         self.language = language
         self.verbose = verbose
 
-    def tokenize_document(self, document: str) -> list:
-        return nltk.word_tokenize(document)
-
-    def part_of_speech_tags(self, document: str) -> list:
-        tokens = self.tokenize_document(document=document)
-        return nltk.pos_tag(tokens)
-
     def get_similarity(self):
         """Get the similarity value between the documents"""
         pass
