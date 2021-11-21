@@ -1,16 +1,16 @@
 import string
+import typing
 
 import gensim
 import nltk
 from gensim import corpora
 from nltk.corpus import stopwords
-from nltk.stem.wordnet import WordNetLemmatizer
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import Pipeline
 
-from constants import *
+from parser.parser_base import ParserBase
 
 
 class TopicModeller:
@@ -71,27 +71,34 @@ class TopicModeller:
 
         :return a list of cleaned and lemmatized documents (sentences - strings)
         """
-        story = self.clean_story(story)
 
-        lemmatizer = WordNetLemmatizer()
+        story = self.clean_story(story)
         normalized_sentences = []
-        for sentence in self.extract_sentences(story):
-            tokens_pos = self.get_tokens(sentence)
-            list_lemmas = [lemmatizer.lemmatize(word, pos=self.get_pos_tag_for_lemmatization(pos)) for word, pos in tokens_pos]
-            normalized_sentence = [lemma for lemma in list_lemmas if lemma not in Constants.reporting_verbs]
-            normalized_sentences.append(normalized_sentence)
+
+        parser = ParserBase(document=story)
+        lemmas_sentences = parser.lemmatize(include_stop_words=False, include_punctuation=False)
+
+        print(lemmas_sentences)
+        for lemmas_sentence in lemmas_sentences:
+            sentence_with_only_lemmas = " ".join(lemmas_sentence)
+            normalized_sentences.append(sentence_with_only_lemmas)
+
+        print(normalized_sentences)
 
         return normalized_sentences
 
-    def get_pos_tag_for_lemmatization(self, POS):
-        if POS.startswith("NN"):
-            return "n"
-        elif POS.startswith("VB"):
-            return "v"
-        elif POS.startswith("JJ"):
-            return "a"
-        else:
-            return "n"
+    def tdf_idf_vectorize(self, sentences: list) -> typing.List[list]:
+        """Retturns the TDF-IDF vectors from the sentences"""
+        vectorizer = TfidfVectorizer()
+        tdf_idf_vectors = vectorizer.fit_transform(sentences)
+
+        print("TDIDF vectors")
+        print(tdf_idf_vectors.shape)
+        feature_names = vectorizer.get_feature_names_out()
+        print(len(feature_names))
+        print(feature_names)
+        return tdf_idf_vectors
+
 
     """
     The core idea of the Latent Semantic Analysis is to generate a document-term matrix
@@ -103,7 +110,7 @@ class TopicModeller:
 
     def get_LSA_topics(self, documents):
 
-        # raw documents to tf-idf matrix:
+        # raw documents to tf-idf matrix
         vectorizer = TfidfVectorizer(stop_words="english", use_idf=True, smooth_idf=True)
 
         svd_model = TruncatedSVD(n_components=100, algorithm="randomized", n_iter=10)
@@ -140,15 +147,17 @@ class TopicModeller:
 
         return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
 
-    def get_LDA2Vec(self, documents):
-        # https: // github.com / cemoody / lda2vec
-        return
-
     def extract_topics(self, story):
-        lemmatized_documents = self.lemmatize_story(story)
-        topics = self.get_LDA_topics(lemmatized_documents)
+        lemmatized_sentences = self.lemmatize_story(story)
+        print(lemmatized_sentences)
 
-        sentences = self.extract_sentences(story)
-        lsa_topics = self.get_LSA_topics(sentences)
+        tdf_idf_vectors = self.tdf_idf_vectorize(sentences=lemmatized_sentences)
 
-        return topics
+        # topics = self.get_LDA_topics(lemmatized_sentences)
+
+        # sentences = self.extract_sentences(story)
+        # print(sentences)
+        # lsa_topics = self.get_LSA_topics(sentences)
+
+        return []
+        # return topics

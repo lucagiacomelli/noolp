@@ -32,18 +32,17 @@ class WordNetPathSimilarity(DocSimilarity):
         """
 
         parser = ParserBase(document=document)
-        pos_tags = parser.part_of_speech_tags()
+        pos_tags_sentences = parser.part_of_speech_tags(include_stop_words=False, include_punctuation=False)
 
-        stop_words_set = set(stopwords.words(self.language))
         synsets: list = []
-        for word, pos in pos_tags:
-            try:
-                if word not in stop_words_set:
+        for pos_tags_sentence in pos_tags_sentences:
+            for word, pos in pos_tags_sentence:
+                try:
                     all_synsets = wn.synsets(word, self.convert_tag(pos))
                     if len(all_synsets) > 0:
                         synsets.extend(all_synsets[0:synset_per_word])
-            except Exception:
-                continue
+                except Exception:
+                    continue
 
         return synsets
 

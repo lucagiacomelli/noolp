@@ -13,9 +13,9 @@ class TestParserBase:
         return ParserBase(document=self.doc1)
 
     def test_tokenize(self, instance):
-        assert instance.tokenize_document() == ["This", "is", "a", "function", "to", "test", "document", "path", "similarity", "."]
-        assert instance.tokenize_document(include_stop_words=False) == ["This", "function", "test", "document", "path", "similarity", "."]
-        assert instance.tokenize_document(include_stop_words=False, include_punctuation=False) == [
+        assert instance.tokenize() == ["This", "is", "a", "function", "to", "test", "document", "path", "similarity", "."]
+        assert instance.tokenize(include_stop_words=False) == ["This", "function", "test", "document", "path", "similarity", "."]
+        assert instance.tokenize(include_stop_words=False, include_punctuation=False) == [
             "This",
             "function",
             "test",

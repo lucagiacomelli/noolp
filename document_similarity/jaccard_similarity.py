@@ -12,8 +12,8 @@ class JaccardSimilarity(DocSimilarity):
         parser = ParserBase(document=self.doc1)
         parser2 = ParserBase(document=self.doc2)
 
-        words_document1 = set(parser.tokenize_document(include_stop_words=False, include_punctuation=False))
-        words_document2 = set(parser2.tokenize_document(include_stop_words=False, include_punctuation=False))
+        words_document1 = set().union(*parser.tokenize(include_stop_words=False, include_punctuation=False))
+        words_document2 = set().union(*parser2.tokenize(include_stop_words=False, include_punctuation=False))
 
         intersection = words_document1.intersection(words_document2)
         union = words_document1.union(words_document2)
