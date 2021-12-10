@@ -1,18 +1,24 @@
 import typing
 
-from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
-
+import numpy as np
 
 from document_similarity.doc_similarity import DocSimilarity
 from parser.parser_base import ParserBase
 
 
 class WordNetPathSimilarity(DocSimilarity):
-    def __init__(self, document1: str, document2: str):
-        super().__init__(document1, document2)
+    """
+    The distance measure is the length of the shortest path in the WordNet graph that
+    divides the different synset of the documents.
 
-    def convert_tag(self, wordnet_tag) -> typing.Optional[str]:
+    The similarity of two documents is not symmetric.
+    """
+
+    def __init__(self, documents: typing.List[str], language: str = "english", verbose=False):
+        super().__init__(documents, language, verbose)
+
+    def _convert_tag(self, wordnet_tag) -> typing.Optional[str]:
         """Convert the tag given by nltk.pos_tag to the tag used by wordnet.synsets"""
 
         tag_dict = {"N": "n", "J": "a", "R": "r", "V": "v"}
@@ -21,24 +27,27 @@ class WordNetPathSimilarity(DocSimilarity):
         except KeyError:
             return None
 
-    def doc_to_synsets(self, document: str, synset_per_word: int = 1) -> list:
+    def doc_to_synsets(self, document: str, synset_per_word: int = 1, include_stop_words: bool = False, include_punctuation: bool = False) -> list:
         """
-        Returns a list of WordNet synsets in document.
+        Returns a list of WordNet synsets in document after extracting the Parts Of Speech from it.
 
         :param document: string to be converted
-        :param synset_per_word number of synset per a given word to consider in the similarity
+        :param synset_per_word: number of synset per a given word to consider in the similarity
+        :param include_stop_words: if True, include the stop words in the extraction of the POS tags
+        :param include_punctuation: if True, include the punctuation in the extraction of the POS tags
+
         :return list of synsets [Synset('fish.n.01'), Synset('be.v.01'), Synset('friend.n.01')]
 
         """
 
         parser = ParserBase(document=document)
-        pos_tags_sentences = parser.part_of_speech_tags(include_stop_words=False, include_punctuation=False)
+        pos_tags_sentences = parser.part_of_speech_tags(include_stop_words=include_stop_words, include_punctuation=include_punctuation)
 
         synsets: list = []
         for pos_tags_sentence in pos_tags_sentences:
             for word, pos in pos_tags_sentence:
                 try:
-                    all_synsets = wn.synsets(word, self.convert_tag(pos))
+                    all_synsets = wn.synsets(word, self._convert_tag(pos))
                     if len(all_synsets) > 0:
                         synsets.extend(all_synsets[0:synset_per_word])
                 except Exception:
@@ -77,16 +86,30 @@ class WordNetPathSimilarity(DocSimilarity):
 
         return sum(largest_similarity_values) / len(largest_similarity_values)
 
-    def get_similarity(self):
+    def get_similarity(self) -> typing.List[typing.List[float]]:
         """
         Path similarity is a similarity measure that finds the distance that is the length of the shortest path between two synsets
-        using WordNet. The similarity of the documents is the average
+        using WordNet. The similarity of the documents is the average of the length two paths.
+
+        :return the matrix of the similarities of each pair of documents.
 
         """
 
-        synsets1 = self.doc_to_synsets(self.doc1)
-        synsets2 = self.doc_to_synsets(self.doc2)
+        # extract Wordnet synset from documents
+        synsets_list = []
+        for document in self.documents:
+            synsets_list.append(self.doc_to_synsets(document))
 
-        path_similarity = (self.similarity_score(synsets1, synsets2) + self.similarity_score(synsets2, synsets1)) / 2
-        print(f"\nPath Similarity between the documents: {path_similarity}")
-        return path_similarity
+        path_similarities = self.init_matrix_similarities()
+        for (i1, doc1), (i2, doc2) in self.pairs_of_documents():
+            synsets1 = synsets_list[i1]
+            synsets2 = synsets_list[i2]
+
+            path_similarity = (self.similarity_score(synsets1, synsets2) + self.similarity_score(synsets2, synsets1)) / 2
+
+            if self.verbose:
+                print(f"\nPath Similarity between the documents {i1} and {i2}: {path_similarity}")
+
+            path_similarities[i1][i2] = path_similarity
+
+        return np.array(path_similarities)

@@ -60,3 +60,12 @@ class TestParserBase:
             "bank",
             "said",
         ]
+
+    def test_lemmatize(self):
+        parser = ParserBase(document="They were found in their house with their hands dirty saying nothing.")
+        assert parser.lemmatize() == [["They", "be", "find", "in", "their", "house", "with", "their", "hand", "dirty", "say", "nothing", "."]]
+        assert parser.lemmatize(include_stop_words=False) == [["They", "find", "house", "hand", "dirty", "say", "nothing", "."]]
+        assert parser.lemmatize(include_stop_words=False, include_punctuation=False) == [["They", "find", "house", "hand", "dirty", "say", "nothing"]]
+        assert parser.lemmatize(include_stop_words=False, include_punctuation=False, include_reporting_verbs=False) == [
+            ["They", "find", "house", "hand", "dirty", "nothing"]
+        ]

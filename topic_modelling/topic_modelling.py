@@ -1,27 +1,26 @@
-import string
-import typing
+from typing import List
 
 import gensim
-import nltk
 from gensim import corpora
-from nltk.corpus import stopwords
+# from gensim.models.coherencemodel import CoherenceModel
+from gensim.test.utils import common_texts
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import Pipeline
 
-from parser.parser_base import ParserBase
+from parser.tfidf_parser import TfdifParser
 
 
 class TopicModeller:
-    def __init__(self, name, number_topics=3, number_passes=50, words_per_topic=3):
+    def __init__(self, name, number_topics=3, number_passes=20, words_per_topic=3, verbose: bool = False):
         self.name = name
         self.number_topics = number_topics
         self.number_passes = number_passes
         self.words_per_topic = words_per_topic
+        self.verbose = verbose
 
-    def clean_story(self, story):
-        # story = story.decode('utf8')
+    def _clean_story(self, story: str) -> str:
 
         # Handle the case with .I, .You, .It, .He, .She, .We, .They
         story = story.replace(".I ", ". I ")
@@ -38,63 +37,6 @@ class TopicModeller:
             story = story[:index_read_more]
 
         return story
-
-    """
-    Extract tokens from a sentence,
-    removing English stopwords and punctuations
-    @Return a list of tokens (strings)
-    """
-
-    def get_tokens(self, sentence):
-        stop = set(stopwords.words("english"))
-        punctuation = set(string.punctuation)
-        punctuation.update(["''", "``", "'s"])
-
-        tokens = nltk.word_tokenize(sentence)
-        tokens_pos = nltk.pos_tag(tokens)
-
-        stop_free = [i for i in tokens_pos if i[0] not in stop]
-        punc_free = [ch for ch in stop_free if ch[0] not in punctuation]
-        return punc_free
-
-    def extract_sentences(self, story):
-        """
-        Extract sentence from a given story
-        :param story:
-
-        """
-        sentences = nltk.sent_tokenize(story)
-        return sentences
-
-    def lemmatize_story(self, story):
-        """
-
-        :return a list of cleaned and lemmatized documents (sentences - strings)
-        """
-
-        story = self.clean_story(story)
-        normalized_sentences = []
-
-        parser = ParserBase(document=story)
-        lemmas_sentences = parser.lemmatize(include_stop_words=False, include_punctuation=False)
-
-        for lemmas_sentence in lemmas_sentences:
-            sentence_with_only_lemmas = " ".join(lemmas_sentence)
-            normalized_sentences.append(sentence_with_only_lemmas)
-
-        return normalized_sentences
-
-    def tdf_idf_vectorize(self, sentences: list) -> typing.List[list]:
-        """Retturns the TDF-IDF vectors from the sentences"""
-        vectorizer = TfidfVectorizer()
-        tdf_idf_vectors = vectorizer.fit_transform(sentences)
-
-        print("TDIDF vectors")
-        print(tdf_idf_vectors.shape)
-        feature_names = vectorizer.get_feature_names_out()
-        print(len(feature_names))
-        print(feature_names)
-        return tdf_idf_vectors
 
     """
     The core idea of the Latent Semantic Analysis is to generate a document-term matrix
@@ -117,46 +59,49 @@ class TopicModeller:
         # use the matrix to find topics and similarities
         return
 
-    """
-       Extract topics from a story using
-       Latent Dirichlet Allocation. We calculate the document-term matrix
-       and apply the LDA model.
-       @Return a list of tuples where erach tuple has a set of relevant words for the topic
-       """
+    def get_LDA_topics(self, documents: List[List[str]]):
 
-    def get_LDA_topics(self, documents):
-
-        # Creating the term dictionary of our courpus, where every unique term is assigned an index.
         dictionary = corpora.Dictionary(documents)
 
-        # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
+        # Converting list of documents (corpus) into Document Term Frequency Matrix.
+        # Each entry (j, f) in the row i is a tuple that describes the frequency f of the word j in the document i
         doc_term_matrix = [dictionary.doc2bow(doc) for doc in documents]
 
-        # Creating the object for LDA model
-        Lda = gensim.models.ldamodel.LdaModel
+        # NOTE: we can also save the trained model and load the model for unseen documents
 
-        # Running and Trainign LDA model on the document term matrix.
-        # print len(documents)
+        # number of documents to be used in each training chunk.
+        chunksize = len(documents) / 3
+        lda_model = gensim.models.ldamodel.LdaModel(
+            corpus=doc_term_matrix,
+            id2word=dictionary,
+            num_topics=self.number_topics,
+            random_state=100,
+            update_every=1,
+            chunksize=chunksize,
+            passes=self.number_passes,
+            alpha="auto",
+            per_word_topics=True,
+        )
 
-        # chunksize = len(documents)/5
-        ldamodel = Lda(doc_term_matrix, num_topics=self.number_topics, id2word=dictionary, passes=self.number_passes)
+        if self.verbose:
+            print([[(dictionary[id], freq) for id, freq in cp] for cp in (doc_term_entry for doc_term_entry in doc_term_matrix)])
 
-        return ldamodel.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
+            print(lda_model.print_topics())
+            print('\nPerplexity: ', lda_model.log_perplexity(doc_term_matrix))
+
+        # coherence_model_lda = CoherenceModel(model=lda_model, texts=documents, dictionary=dictionary, coherence='c_v')
+        # coherence_lda = coherence_model_lda.get_coherence()
+        # print('\nCoherence Score: ', coherence_lda)
+
+        return lda_model.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
 
     def extract_topics(self, story, use_lemmatization: bool = True):
+        story = self._clean_story(story)
 
-        if use_lemmatization:
-            sentences = self.lemmatize_story(story)
-        else:
-            sentences = ParserBase(document=story).extract_sentences()
+        tfidf_parser = TfdifParser(document=story, verbose=True)
 
-        tdf_idf_vectors = self.tdf_idf_vectorize(sentences=sentences)
-
-        # topics = self.get_LDA_topics(lemmatized_sentences)
-
-        # sentences = self.extract_sentences(story)
-        # print(sentences)
+        lemmas = tfidf_parser.lemmatize(include_stop_words=False, include_punctuation=False)
+        topics = self.get_LDA_topics(lemmas)
         # lsa_topics = self.get_LSA_topics(sentences)
 
-        return []
-        # return topics
+        return topics

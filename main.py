@@ -1,13 +1,15 @@
-from typing import Optional
+from typing import Optional, List
 
 from document_similarity.jaccard_similarity import JaccardSimilarity
 from document_similarity.wordnet_path_similarity import WordNetPathSimilarity
+from document_similarity.tfidf_similarity import TFIDFSimilarity
 from topic_modelling.topic_modelling import TopicModeller
 
 print("\nWelcome to Document Similarity and Topic Modelling!!\n")
 
-doc1 = "This is a function to test document_path_similarity."
+doc1 = "This is a function to test document similarity."
 doc2 = "Use this function to see if the similarity score is correct!"
+doc3 = "Use this function to evaluate if the similarity score is right!"
 story = (
     'A number of Santander cash machines have been shut down due to "potential criminal activity and vandalism", '
     'the bank has said. Lancashire Police Santander said "five ATMs were shut down immediately" but cash machines '
@@ -31,25 +33,37 @@ story = (
 
 
 class App:
+    def get_similarities(self, documents: List[str]) -> dict:
+        type_similarity_to_objects = {
+            "wordnet_path_similarity": WordNetPathSimilarity(documents=documents, verbose=False),
+            "jaccard_similarity": JaccardSimilarity(documents=documents, verbose=False),
+            "tfidf_cosine_similarity": TFIDFSimilarity(documents=documents, verbose=False, metric="cosine"),
+            "tfidf_euclidean_similarity": TFIDFSimilarity(documents=documents, verbose=False, metric="euclidean"),
+        }
 
-    TYPE_SIMILARITY_DICT = {"path_similarity": WordNetPathSimilarity, "jaccard_similarity": JaccardSimilarity}
-    DEFAULT_SIMILARITIES = list(TYPE_SIMILARITY_DICT.keys())
-
-    def get_similarities(self, document1: str, document2: str, similarity_types: Optional[list] = None) -> dict:
-        print(f"document1: {document1}")
-        print(f"document2: {document2}")
-
-        if not similarity_types:
-            similarity_types = self.DEFAULT_SIMILARITIES
         similarities = {}
-        for similarity_type in similarity_types:
-            similarities[similarity_type] = self.TYPE_SIMILARITY_DICT[similarity_type](document1=document1, document2=document2).get_similarity()
+        for similarity_type, similarity_obj in type_similarity_to_objects.items():
+            similarities[similarity_type] = similarity_obj.get_similarity()
+
+        for metric, similarities_matrix in similarities.items():
+            print(f"\n{metric}:")
+            print(similarities_matrix)
 
         return similarities
 
 
 app = App()
-doc_sim = app.get_similarities(document1=doc1, document2=doc2)
 
+
+documents = [doc1, doc2, doc3]
+
+print("\n#### DOCUMENT SIMILARITY ####\n")
+print(f"documents: {documents}")
+doc_sim = app.get_similarities(documents=documents)
+# doc_sim = app.get_similarities(documents=[doc1, doc2])
+
+
+print("\n#### TOPIC EXTRACTION ####\n")
+print(f"document: {story}")
 topicModeller = TopicModeller("topic modeller 1")
 print(f"Topics extracted: {topicModeller.extract_topics(story)}")
