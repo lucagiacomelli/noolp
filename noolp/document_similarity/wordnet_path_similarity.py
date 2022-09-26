@@ -3,8 +3,8 @@ import typing
 from nltk.corpus import wordnet as wn
 import numpy as np
 
-from document_similarity.doc_similarity import DocSimilarity
-from parser.parser_base import ParserBase
+from noolp.document_similarity.doc_similarity import DocSimilarity
+from noolp.parser import ParserBase
 
 
 class WordNetPathSimilarity(DocSimilarity):

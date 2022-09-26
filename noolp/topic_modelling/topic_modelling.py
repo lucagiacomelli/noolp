@@ -4,13 +4,12 @@ import gensim
 from gensim import corpora
 
 # from gensim.models.coherencemodel import CoherenceModel
-from gensim.test.utils import common_texts
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import Pipeline
 
-from parser.tfidf_parser import TfdifParser
+from noolp.parser import TfdifParser
 
 
 class TopicModeller:

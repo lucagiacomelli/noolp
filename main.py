@@ -1,8 +1,8 @@
-from typing import Optional, List
+from typing import List
 
-from document_similarity.jaccard_similarity import JaccardSimilarity
-from document_similarity.wordnet_path_similarity import WordNetPathSimilarity
-from document_similarity.tfidf_similarity import TFIDFSimilarity
+from noolp.document_similarity.jaccard_similarity import JaccardSimilarity
+from noolp.document_similarity import WordNetPathSimilarity
+from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
 from topic_modelling.topic_modelling import TopicModeller
 
 print("\nWelcome to Document Similarity and Topic Modelling!!\n")

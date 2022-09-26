@@ -1,4 +1,4 @@
-from parser.parser_base import ParserBase
+from noolp.parser import ParserBase
 
 
 class TfdifParser(ParserBase):

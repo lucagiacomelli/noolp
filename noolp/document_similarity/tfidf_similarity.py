@@ -5,8 +5,8 @@ from sklearn.metrics.pairwise import euclidean_distances
 
 import numpy as np
 
-from document_similarity.doc_similarity import DocSimilarity
-from parser.tfidf_parser import TfdifParser
+from noolp.document_similarity.doc_similarity import DocSimilarity
+from noolp.parser import TfdifParser
 
 
 class TFIDFSimilarity(DocSimilarity):

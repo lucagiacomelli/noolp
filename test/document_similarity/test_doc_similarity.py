@@ -1,6 +1,6 @@
 from pytest import fixture
 
-from document_similarity.doc_similarity import DocSimilarity
+from noolp.document_similarity.doc_similarity import DocSimilarity
 
 
 class TestDocSimilarity:

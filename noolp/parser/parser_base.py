@@ -7,7 +7,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 import nltk
 
 from constants import Constants
-from parser.exceptions import ParserLanguageException
+from noolp.parser import ParserLanguageException
 
 
 class ParserBase:
