@@ -17,7 +17,7 @@ class TFIDFSimilarity(DocSimilarity):
 
     """
 
-    def __init__(self, documents: List[str], language: str = "english", verbose=False, norm="l2", metric='cosine'):
+    def __init__(self, documents: List[str], language: str = "english", verbose=False, norm="l2", metric="cosine"):
         super().__init__(documents, language, verbose)
         self.norm = norm
         self.metric = metric
@@ -43,9 +43,9 @@ class TFIDFSimilarity(DocSimilarity):
         tfidf_vectors = self.get_vectors()
 
         # compute the cosine similarity between the TF-IDF vectors. The normalization is already done during the TF-iDF vectors extraction
-        if self.metric == 'cosine':
+        if self.metric == "cosine":
             tfidf_similarities = np.dot(tfidf_vectors, tfidf_vectors.T).toarray()
-        if self.metric == 'euclidean':
+        if self.metric == "euclidean":
             tfidf_similarities = euclidean_distances(tfidf_vectors)
 
         return tfidf_similarities

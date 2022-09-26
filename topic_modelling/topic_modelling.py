@@ -2,6 +2,7 @@ from typing import List
 
 import gensim
 from gensim import corpora
+
 # from gensim.models.coherencemodel import CoherenceModel
 from gensim.test.utils import common_texts
 
@@ -87,7 +88,7 @@ class TopicModeller:
             print([[(dictionary[id], freq) for id, freq in cp] for cp in (doc_term_entry for doc_term_entry in doc_term_matrix)])
 
             print(lda_model.print_topics())
-            print('\nPerplexity: ', lda_model.log_perplexity(doc_term_matrix))
+            print("\nPerplexity: ", lda_model.log_perplexity(doc_term_matrix))
 
         # coherence_model_lda = CoherenceModel(model=lda_model, texts=documents, dictionary=dictionary, coherence='c_v')
         # coherence_lda = coherence_model_lda.get_coherence()

@@ -7,7 +7,7 @@ from parser.parser_base import ParserBase
 
 
 class JaccardSimilarity(DocSimilarity):
-    def __init__(self,  documents: List[str], language: str = "english", verbose=False):
+    def __init__(self, documents: List[str], language: str = "english", verbose=False):
         super().__init__(documents, language, verbose)
 
     def get_similarity(self) -> List[List[float]]:

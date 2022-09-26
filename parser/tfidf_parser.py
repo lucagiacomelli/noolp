@@ -2,9 +2,7 @@ from parser.parser_base import ParserBase
 
 
 class TfdifParser(ParserBase):
-    """
-
-    """
+    """ """
 
     def __init__(self, document: str, language: str = "english", verbose=False):
         super().__init__(document, language, verbose)
