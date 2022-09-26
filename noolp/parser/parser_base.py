@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 import nltk
 
-from constants import Constants
+from noolp.constants import Constants
 from noolp.parser.exceptions import ParserLanguageException
 
 
