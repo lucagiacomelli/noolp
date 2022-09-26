@@ -4,7 +4,7 @@ from nltk.corpus import wordnet as wn
 import numpy as np
 
 from noolp.document_similarity.doc_similarity import DocSimilarity
-from noolp.parser import ParserBase
+from noolp.parser.parser_base import ParserBase
 
 
 class WordNetPathSimilarity(DocSimilarity):

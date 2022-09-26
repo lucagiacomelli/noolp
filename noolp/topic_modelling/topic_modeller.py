@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import Pipeline
 
-from noolp.parser import TfdifParser
+from noolp.parser.tfidf_parser import TfdifParser
 
 
 class TopicModeller:

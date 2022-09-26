@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 
 from noolp.document_similarity.doc_similarity import DocSimilarity
-from noolp.parser import ParserBase
+from noolp.parser.parser_base import ParserBase
 
 
 class JaccardSimilarity(DocSimilarity):
