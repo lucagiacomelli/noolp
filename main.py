@@ -35,6 +35,9 @@ story = (
 class App:
     def get_similarities(self, documents: List[str]) -> dict:
         type_similarity_to_objects = {
+            "chatgpt_similarity": WordNetPathSimilarity(
+                documents=documents, verbose=False
+            ),
             "wordnet_path_similarity": WordNetPathSimilarity(
                 documents=documents, verbose=False
             ),

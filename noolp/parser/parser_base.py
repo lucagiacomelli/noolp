@@ -23,6 +23,10 @@ class ParserBase:
         self.verbose = verbose
 
     def _punctuation_set(self) -> set:
+        if self.language != "english":
+            raise ValueError(
+                "Do not support punctuation set in a language different from English"
+            )
         punctuation_set = set(string.punctuation)
         punctuation_set.update(["''", "``", "'s"])
         return punctuation_set
@@ -42,6 +46,8 @@ class ParserBase:
         :param include_stop_words:
         :param include_punctuation:
         :return:
+
+        # TODO: parallelize the function and improve performance
         """
 
         stop_words_set = set(stopwords.words(self.language))

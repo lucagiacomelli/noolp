@@ -52,7 +52,8 @@ class TFIDFSimilarity(DocSimilarity):
         tfidf_similarities = []
         tfidf_vectors = self.get_vectors()
 
-        # compute the cosine similarity between the TF-IDF vectors. The normalization is already done during the TF-iDF vectors extraction
+        # compute the cosine similarity between the TF-IDF vectors.
+        # The normalization is already done during the TF-iDF vectors extraction
         if self.metric == "cosine":
             tfidf_similarities = np.dot(tfidf_vectors, tfidf_vectors.T).toarray()
         if self.metric == "euclidean":

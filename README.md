@@ -16,16 +16,8 @@ Install the dependencies in the virtual environment.
 python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
+python -m nltk.downloader popular
 ```
-
-
-Download the popular packages of nltk. To do it, execute the following script:
-```
-python3
-import nltk
-nltk.download()
-```
-choose Download (typing `d`) and then type `popular` to download the popular corpora.
 
 
 ## Run the example 
@@ -34,4 +26,10 @@ To run the script clone the repo and:
 python3 main.py
 ```
 
-##
+## Run the tests
+To run the tests install the test requirements first, and then run pytest:
+```
+pip3 install -r requirements-test.txt
+pytest 
+```
+
