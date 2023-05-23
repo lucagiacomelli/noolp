@@ -21,7 +21,7 @@ class DocSimilarity:
     def init_matrix_similarities(self) -> List[List[int]]:
         matrix_similarities = [[0] * self.n for _ in range(self.n)]
 
-        # the documents is identical to themselves
+        # the documents are identical to themselves
         for i in range(self.n):
             matrix_similarities[i][i] = 1
         return matrix_similarities
