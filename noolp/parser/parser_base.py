@@ -33,7 +33,9 @@ class ParserBase:
         sentences = nltk.sent_tokenize(self.document)
         return sentences
 
-    def tokenize(self, include_stop_words: bool = True, include_punctuation: bool = True) -> List[List[str]]:
+    def tokenize(
+        self, include_stop_words: bool = True, include_punctuation: bool = True
+    ) -> List[List[str]]:
         """
         Extracts the sentences from the document and, for each sentence, extract its tokens.
 
@@ -57,7 +59,9 @@ class ParserBase:
 
         return tokens_sentences
 
-    def part_of_speech_tags(self, include_stop_words: bool = True, include_punctuation: bool = True) -> List[List[tuple]]:
+    def part_of_speech_tags(
+        self, include_stop_words: bool = True, include_punctuation: bool = True
+    ) -> List[List[tuple]]:
         """
         Returns the Part of Speech tags for every sentence in the document.
         In order to extracts the tags the sentences are tokenized (considering punctuation and stop words).
@@ -74,9 +78,13 @@ class ParserBase:
         for tokens_sentence in tokens_sentences:
             pos_tags = nltk.pos_tag(tokens_sentence)
             if not include_stop_words:
-                pos_tags = [pos_tag for pos_tag in pos_tags if pos_tag[0] not in stop_words_set]
+                pos_tags = [
+                    pos_tag for pos_tag in pos_tags if pos_tag[0] not in stop_words_set
+                ]
             if not include_punctuation:
-                pos_tags = [pos_tag for pos_tag in pos_tags if pos_tag[0] not in punctuation_set]
+                pos_tags = [
+                    pos_tag for pos_tag in pos_tags if pos_tag[0] not in punctuation_set
+                ]
             pos_tags_sentences.append(pos_tags)
 
         return pos_tags_sentences
@@ -91,7 +99,12 @@ class ParserBase:
         else:
             return "n"
 
-    def lemmatize(self, include_stop_words: bool = True, include_punctuation: bool = True, include_reporting_verbs: bool = True) -> List[List[str]]:
+    def lemmatize(
+        self,
+        include_stop_words: bool = True,
+        include_punctuation: bool = True,
+        include_reporting_verbs: bool = True,
+    ) -> List[List[str]]:
         """
         Returns the lemmas of each sentence of the document.
         The lemmas are calculating from the part of speech tags.
@@ -103,21 +116,35 @@ class ParserBase:
         """
         lemmatizer = WordNetLemmatizer()
 
-        pos_tags_sentences = self.part_of_speech_tags(include_stop_words=include_stop_words, include_punctuation=include_punctuation)
+        pos_tags_sentences = self.part_of_speech_tags(
+            include_stop_words=include_stop_words,
+            include_punctuation=include_punctuation,
+        )
         lemmas_sentences = []
         for pos_tags_sentence in pos_tags_sentences:
-            list_lemmas = [lemmatizer.lemmatize(word, pos=self._get_pos_tag_for_lemmatization(pos)) for word, pos in pos_tags_sentence]
+            list_lemmas = [
+                lemmatizer.lemmatize(word, pos=self._get_pos_tag_for_lemmatization(pos))
+                for word, pos in pos_tags_sentence
+            ]
 
             if not include_reporting_verbs:
                 try:
-                    list_lemmas = [lemma for lemma in list_lemmas if lemma not in Constants.reporting_verbs[self.language]]
+                    list_lemmas = [
+                        lemma
+                        for lemma in list_lemmas
+                        if lemma not in Constants.reporting_verbs[self.language]
+                    ]
                 except KeyError:
-                    raise ParserLanguageException(f"Reporting verbs for language {self.language} are not available.")
+                    raise ParserLanguageException(
+                        f"Reporting verbs for language {self.language} are not available."
+                    )
 
             lemmas_sentences.append(list_lemmas)
         return lemmas_sentences
 
-    def extract_lemmatized_sentences(self, include_stop_words: bool = True, include_punctuation: bool = True) -> List[str]:
+    def extract_lemmatized_sentences(
+        self, include_stop_words: bool = True, include_punctuation: bool = True
+    ) -> List[str]:
         """
         Extract sentences with only lemmas from a given document.
 
@@ -125,14 +152,22 @@ class ParserBase:
         :param include_punctuation: if True, include punctuation in the returned sentences
         """
 
-        lemmas_sentences = self.lemmatize(include_stop_words=include_stop_words, include_punctuation=include_punctuation)
+        lemmas_sentences = self.lemmatize(
+            include_stop_words=include_stop_words,
+            include_punctuation=include_punctuation,
+        )
         sentences = []
         for lemmas_sentence in lemmas_sentences:
             sentence_with_only_lemmas = " ".join(lemmas_sentence)
             sentences.append(sentence_with_only_lemmas)
         return sentences
 
-    def most_common_terms(self, include_stop_words: bool = True, include_punctuation: bool = True):
-        lemmas_sentences = self.lemmatize(include_stop_words=include_stop_words, include_punctuation=include_punctuation)
+    def most_common_terms(
+        self, include_stop_words: bool = True, include_punctuation: bool = True
+    ):
+        lemmas_sentences = self.lemmatize(
+            include_stop_words=include_stop_words,
+            include_punctuation=include_punctuation,
+        )
         dictionary = corpora.Dictionary(lemmas_sentences)
         return dictionary.most_common()

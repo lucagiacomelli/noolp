@@ -35,10 +35,16 @@ story = (
 class App:
     def get_similarities(self, documents: List[str]) -> dict:
         type_similarity_to_objects = {
-            "wordnet_path_similarity": WordNetPathSimilarity(documents=documents, verbose=False),
+            "wordnet_path_similarity": WordNetPathSimilarity(
+                documents=documents, verbose=False
+            ),
             "jaccard_similarity": JaccardSimilarity(documents=documents, verbose=False),
-            "tfidf_cosine_similarity": TFIDFSimilarity(documents=documents, verbose=False, metric="cosine"),
-            "tfidf_euclidean_similarity": TFIDFSimilarity(documents=documents, verbose=False, metric="euclidean"),
+            "tfidf_cosine_similarity": TFIDFSimilarity(
+                documents=documents, verbose=False, metric="cosine"
+            ),
+            "tfidf_euclidean_similarity": TFIDFSimilarity(
+                documents=documents, verbose=False, metric="euclidean"
+            ),
         }
 
         similarities = {}

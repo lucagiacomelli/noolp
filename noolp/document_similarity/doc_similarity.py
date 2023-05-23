@@ -12,7 +12,9 @@ class DocSimilarity:
         self.verbose = verbose
 
         if len(self.documents) < 2:
-            raise AttributeError("The list of documents should contain at list two strings.")
+            raise AttributeError(
+                "The list of documents should contain at list two strings."
+            )
 
     @property
     def n(self) -> int:

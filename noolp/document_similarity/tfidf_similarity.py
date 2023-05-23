@@ -17,13 +17,23 @@ class TFIDFSimilarity(DocSimilarity):
 
     """
 
-    def __init__(self, documents: List[str], language: str = "english", verbose=False, norm="l2", metric="cosine"):
+    def __init__(
+        self,
+        documents: List[str],
+        language: str = "english",
+        verbose=False,
+        norm="l2",
+        metric="cosine",
+    ):
         super().__init__(documents, language, verbose)
         self.norm = norm
         self.metric = metric
 
     def get_vectors(self):
-        clean_documents = [TfdifParser(document=document).clean_document() for document in self.documents]
+        clean_documents = [
+            TfdifParser(document=document).clean_document()
+            for document in self.documents
+        ]
 
         # L2 normalization by default
         vectorizer = TfidfVectorizer(norm=self.norm)

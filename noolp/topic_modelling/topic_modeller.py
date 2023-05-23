@@ -13,7 +13,14 @@ from noolp.parser.tfidf_parser import TfdifParser
 
 
 class TopicModeller:
-    def __init__(self, name, number_topics=3, number_passes=20, words_per_topic=3, verbose: bool = False):
+    def __init__(
+        self,
+        name,
+        number_topics=3,
+        number_passes=20,
+        words_per_topic=3,
+        verbose: bool = False,
+    ):
         self.name = name
         self.number_topics = number_topics
         self.number_passes = number_passes
@@ -49,7 +56,9 @@ class TopicModeller:
     def get_LSA_topics(self, documents):
 
         # raw documents to tf-idf matrix
-        vectorizer = TfidfVectorizer(stop_words="english", use_idf=True, smooth_idf=True)
+        vectorizer = TfidfVectorizer(
+            stop_words="english", use_idf=True, smooth_idf=True
+        )
 
         svd_model = TruncatedSVD(n_components=100, algorithm="randomized", n_iter=10)
 
@@ -84,7 +93,12 @@ class TopicModeller:
         )
 
         if self.verbose:
-            print([[(dictionary[id], freq) for id, freq in cp] for cp in (doc_term_entry for doc_term_entry in doc_term_matrix)])
+            print(
+                [
+                    [(dictionary[id], freq) for id, freq in cp]
+                    for cp in (doc_term_entry for doc_term_entry in doc_term_matrix)
+                ]
+            )
 
             print(lda_model.print_topics())
             print("\nPerplexity: ", lda_model.log_perplexity(doc_term_matrix))
@@ -93,14 +107,20 @@ class TopicModeller:
         # coherence_lda = coherence_model_lda.get_coherence()
         # print('\nCoherence Score: ', coherence_lda)
 
-        return lda_model.show_topics(num_topics=self.number_topics, num_words=self.words_per_topic, formatted=False)
+        return lda_model.show_topics(
+            num_topics=self.number_topics,
+            num_words=self.words_per_topic,
+            formatted=False,
+        )
 
     def extract_topics(self, story, use_lemmatization: bool = True):
         story = self._clean_story(story)
 
         tfidf_parser = TfdifParser(document=story, verbose=True)
 
-        lemmas = tfidf_parser.lemmatize(include_stop_words=False, include_punctuation=False)
+        lemmas = tfidf_parser.lemmatize(
+            include_stop_words=False, include_punctuation=False
+        )
         topics = self.get_LDA_topics(lemmas)
         # lsa_topics = self.get_LSA_topics(sentences)
 

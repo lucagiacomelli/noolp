@@ -10,7 +10,9 @@ class TfdifParser(ParserBase):
     def clean_document(self):
         """Returns the TDF-IDF vectors from the sentences of the document."""
 
-        sentences = self.extract_lemmatized_sentences(include_punctuation=False, include_stop_words=False)
+        sentences = self.extract_lemmatized_sentences(
+            include_punctuation=False, include_stop_words=False
+        )
         cleaned_document = ". ".join(sentences)
 
         return cleaned_document

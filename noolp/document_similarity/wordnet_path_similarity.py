@@ -15,7 +15,9 @@ class WordNetPathSimilarity(DocSimilarity):
     The similarity of two documents is not symmetric.
     """
 
-    def __init__(self, documents: typing.List[str], language: str = "english", verbose=False):
+    def __init__(
+        self, documents: typing.List[str], language: str = "english", verbose=False
+    ):
         super().__init__(documents, language, verbose)
 
     def _convert_tag(self, wordnet_tag) -> typing.Optional[str]:
@@ -27,7 +29,13 @@ class WordNetPathSimilarity(DocSimilarity):
         except KeyError:
             return None
 
-    def doc_to_synsets(self, document: str, synset_per_word: int = 1, include_stop_words: bool = False, include_punctuation: bool = False) -> list:
+    def doc_to_synsets(
+        self,
+        document: str,
+        synset_per_word: int = 1,
+        include_stop_words: bool = False,
+        include_punctuation: bool = False,
+    ) -> list:
         """
         Returns a list of WordNet synsets in document after extracting the Parts Of Speech from it.
 
@@ -41,7 +49,10 @@ class WordNetPathSimilarity(DocSimilarity):
         """
 
         parser = ParserBase(document=document)
-        pos_tags_sentences = parser.part_of_speech_tags(include_stop_words=include_stop_words, include_punctuation=include_punctuation)
+        pos_tags_sentences = parser.part_of_speech_tags(
+            include_stop_words=include_stop_words,
+            include_punctuation=include_punctuation,
+        )
 
         synsets: list = []
         for pos_tags_sentence in pos_tags_sentences:
@@ -74,8 +85,13 @@ class WordNetPathSimilarity(DocSimilarity):
             for syn2 in synset_list_2:
                 path_similarity = syn.path_similarity(syn2)
                 if self.verbose:
-                    print(f"Path similarity between {syn} and {syn2}: {path_similarity}")
-                if syn.path_similarity(syn2) is not None and syn.path_similarity(syn2) > max_similarity:
+                    print(
+                        f"Path similarity between {syn} and {syn2}: {path_similarity}"
+                    )
+                if (
+                    syn.path_similarity(syn2) is not None
+                    and syn.path_similarity(syn2) > max_similarity
+                ):
                     max_similarity = syn.path_similarity(syn2)
 
             if max_similarity != 0.0:
@@ -105,10 +121,15 @@ class WordNetPathSimilarity(DocSimilarity):
             synsets1 = synsets_list[i1]
             synsets2 = synsets_list[i2]
 
-            path_similarity = (self.similarity_score(synsets1, synsets2) + self.similarity_score(synsets2, synsets1)) / 2
+            path_similarity = (
+                self.similarity_score(synsets1, synsets2)
+                + self.similarity_score(synsets2, synsets1)
+            ) / 2
 
             if self.verbose:
-                print(f"\nPath Similarity between the documents {i1} and {i2}: {path_similarity}")
+                print(
+                    f"\nPath Similarity between the documents {i1} and {i2}: {path_similarity}"
+                )
 
             path_similarities[i1][i2] = path_similarity
 

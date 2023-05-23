@@ -37,15 +37,32 @@ class TestParserBase:
         return ParserBase(document=self.story)
 
     def test_tokenize(self, instance):
-        assert instance.tokenize() == [["This", "is", "a", "function", "to", "test", "document", "path", "similarity", "."]]
-        assert instance.tokenize(include_stop_words=False) == [["This", "function", "test", "document", "path", "similarity", "."]]
-        assert instance.tokenize(include_stop_words=False, include_punctuation=False) == [
-            ["This", "function", "test", "document", "path", "similarity"]
+        assert instance.tokenize() == [
+            [
+                "This",
+                "is",
+                "a",
+                "function",
+                "to",
+                "test",
+                "document",
+                "path",
+                "similarity",
+                ".",
+            ]
         ]
+        assert instance.tokenize(include_stop_words=False) == [
+            ["This", "function", "test", "document", "path", "similarity", "."]
+        ]
+        assert instance.tokenize(
+            include_stop_words=False, include_punctuation=False
+        ) == [["This", "function", "test", "document", "path", "similarity"]]
 
     def test_tokenize__more_sentences(self, instance_story):
         assert len(instance_story.tokenize()) == 17
-        assert instance_story.tokenize(include_stop_words=False, include_punctuation=False)[0] == [
+        assert instance_story.tokenize(
+            include_stop_words=False, include_punctuation=False
+        )[0] == [
             "A",
             "number",
             "Santander",
@@ -62,10 +79,34 @@ class TestParserBase:
         ]
 
     def test_lemmatize(self):
-        parser = ParserBase(document="They were found in their house with their hands dirty saying nothing.")
-        assert parser.lemmatize() == [["They", "be", "find", "in", "their", "house", "with", "their", "hand", "dirty", "say", "nothing", "."]]
-        assert parser.lemmatize(include_stop_words=False) == [["They", "find", "house", "hand", "dirty", "say", "nothing", "."]]
-        assert parser.lemmatize(include_stop_words=False, include_punctuation=False) == [["They", "find", "house", "hand", "dirty", "say", "nothing"]]
-        assert parser.lemmatize(include_stop_words=False, include_punctuation=False, include_reporting_verbs=False) == [
-            ["They", "find", "house", "hand", "dirty", "nothing"]
+        parser = ParserBase(
+            document="They were found in their house with their hands dirty saying nothing."
+        )
+        assert parser.lemmatize() == [
+            [
+                "They",
+                "be",
+                "find",
+                "in",
+                "their",
+                "house",
+                "with",
+                "their",
+                "hand",
+                "dirty",
+                "say",
+                "nothing",
+                ".",
+            ]
         ]
+        assert parser.lemmatize(include_stop_words=False) == [
+            ["They", "find", "house", "hand", "dirty", "say", "nothing", "."]
+        ]
+        assert parser.lemmatize(
+            include_stop_words=False, include_punctuation=False
+        ) == [["They", "find", "house", "hand", "dirty", "say", "nothing"]]
+        assert parser.lemmatize(
+            include_stop_words=False,
+            include_punctuation=False,
+            include_reporting_verbs=False,
+        ) == [["They", "find", "house", "hand", "dirty", "nothing"]]

@@ -20,8 +20,12 @@ class JaccardSimilarity(DocSimilarity):
             parser2 = ParserBase(document=doc2)
 
             # consider all the lemmas of all the sentences in each parsed document
-            words_document1 = set().union(*parser.lemmatize(include_stop_words=False, include_punctuation=False))
-            words_document2 = set().union(*parser2.lemmatize(include_stop_words=False, include_punctuation=False))
+            words_document1 = set().union(
+                *parser.lemmatize(include_stop_words=False, include_punctuation=False)
+            )
+            words_document2 = set().union(
+                *parser2.lemmatize(include_stop_words=False, include_punctuation=False)
+            )
 
             intersection = words_document1.intersection(words_document2)
             union = words_document1.union(words_document2)
@@ -29,7 +33,9 @@ class JaccardSimilarity(DocSimilarity):
             jaccard = float(len(intersection)) / len(union)
 
             if self.verbose:
-                print(f"\nJaccard Similarity between documents {i1} and {i2}: {jaccard}")
+                print(
+                    f"\nJaccard Similarity between documents {i1} and {i2}: {jaccard}"
+                )
 
             jaccard_similarities[i1][i2] = jaccard
 

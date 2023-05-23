@@ -7,7 +7,9 @@ _version_re = re.compile(r"__version__\s+=\s+(.*)")
 name_pkg = "noolp"
 
 with open(name_pkg + "/version.py", "rb") as f:
-    VERSION = str(ast.literal_eval(_version_re.search(f.read().decode("utf-8")).group(1)))
+    VERSION = str(
+        ast.literal_eval(_version_re.search(f.read().decode("utf-8")).group(1))
+    )
 
 setup(
     name=name_pkg,
