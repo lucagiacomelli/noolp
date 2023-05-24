@@ -2,13 +2,7 @@
 Natural Language Processing library.
 
 ## Dependencies
-Here the libraries used this project:
-- Python >= 3.7
-- [numpy](https://pypi.python.org/pypi/numpy) 
-- [sklearn](http://scikit-learn.org/stable/install.html)
-- [gensim](https://github.com/RaRe-Technologies/gensim)
-- [nltk](http://www.nltk.org)
-
+Check the `requirements.txt` for all the dependencies of this library.
 
 ## Setup
 Install the dependencies in the virtual environment.
