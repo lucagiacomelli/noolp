@@ -38,42 +38,12 @@ class TestTiktokenParser:
 
     def test_tokenize(self, instance):
         assert instance.tokenize() == [
-            [
-                "This",
-                "is",
-                "a",
-                "function",
-                "to",
-                "test",
-                "document",
-                "path",
-                "similarity",
-                ".",
-            ]
+            [1115, 374, 264, 734, 311, 1296, 2246, 1853, 38723, 13]
         ]
-        # assert instance.tokenize(include_stop_words=False) == [
-        #     ["This", "function", "test", "document", "path", "similarity", "."]
-        # ]
-        # assert instance.tokenize(
-        #     include_stop_words=False, include_punctuation=False
-        # ) == [["This", "function", "test", "document", "path", "similarity"]]
 
     def test_tokenize__more_sentences(self, instance_story):
         assert len(instance_story.tokenize()) == 17
-        assert instance_story.tokenize(
-            include_stop_words=False, include_punctuation=False
-        )[0] == [
-            "A",
-            "number",
-            "Santander",
-            "cash",
-            "machines",
-            "shut",
-            "due",
-            "potential",
-            "criminal",
-            "activity",
-            "vandalism",
-            "bank",
-            "said",
-        ]
+        assert len(instance_story.tokenize()[0]) == 25
+
+    def test_number_tokens(self, instance_story):
+        assert instance_story.number_tokens() == 388

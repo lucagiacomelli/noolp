@@ -5,7 +5,7 @@ from noolp.document_similarity.wordnet_path_similarity import WordNetPathSimilar
 from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
 from noolp.topic_modelling.topic_modeller import TopicModeller
 
-print("\nWelcome to Document Similarity and Topic Modelling!!\n")
+print("\nWelcome to NOOLP - A Natural Language Processing library!!\n")
 
 doc1 = "This is a function to test document similarity."
 doc2 = "Use this function to see if the similarity score is correct!"

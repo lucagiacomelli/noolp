@@ -1,10 +1,13 @@
 from typing import List
+import logging
 
 from nltk.corpus import stopwords
 import nltk
 import tiktoken
 
 from noolp.parser.parser_base import ParserBase
+
+logger = logging.getLogger(__name__)
 
 
 class TiktokenParser(ParserBase):
@@ -15,16 +18,17 @@ class TiktokenParser(ParserBase):
         document: str,
         language: str = "english",
         verbose=False,
-        encoding: str = "cl100k_base",
+        model: str = "gpt-3.5-turbo-0301",
     ):
         super().__init__(document, language, verbose)
-        # By default, load the cl100k_base tokenizer which is designed to work with the ada-002 model
-        self.tokenizer = tiktoken.get_encoding(encoding)
+        try:
+            self.tokenizer = tiktoken.encoding_for_model(model)
+        except KeyError:
+            logger.warning("Warning: model not found. Using cl100k_base encoding.")
+            self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
     def tokenize(
         self,
-        include_stop_words: bool = True,
-        include_punctuation: bool = True,
         max_number_sentences: int = 50,
         max_tokens_per_sentence: int = 500,
     ) -> List[List[str]]:
@@ -35,40 +39,30 @@ class TiktokenParser(ParserBase):
         NOTE: The newest embeddings model can handle inputs with up to 8191 input tokens,
         so most of the rows would not need any chunking, but this may not be true for all the documents.
 
-        :param include_stop_words: if True, includes the stopwords in a given language.
-        :param include_punctuation: if True, includes the punctuation in a given language
+        :param max_number_sentences: raise an Exception if the number of sentences in the document is too high
+        :param max_tokens_per_sentence: raise an Exception if a sentence in the document is too long
         :return:
         """
 
-        stop_words_set = set(stopwords.words(self.language))
-        punctuation_set = self._punctuation_set()
         sentences = self.extract_sentences()
-        if len(sentences):
+        if len(sentences) > max_number_sentences:
             raise RuntimeError(
                 f"The document is too long. Maximum number of sentences == {max_number_sentences}"
             )
         tokens_sentences = []
-
-        result = self.tokenizer.encode(self.document)
-        print(result)
-
         for sentence in sentences:
-
             tokens = self.tokenizer.encode(" " + sentence)
             if len(tokens) > max_tokens_per_sentence:
                 raise RuntimeError(
                     f"The sentence is too long. Maximum number of tokens == {max_tokens_per_sentence}"
                 )
-
-            print(tokens)
-
-            if not include_stop_words:
-                tokens = [token for token in tokens if token not in stop_words_set]
-            if not include_punctuation:
-                tokens = [token for token in tokens if token not in punctuation_set]
             tokens_sentences.append(tokens)
 
         return tokens_sentences
+
+    def number_tokens(self):
+        tokens = self.tokenize()
+        return sum([len(token_list) for token_list in tokens])
 
     @classmethod
     def encoder_for_model(cls, model: str):
