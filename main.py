@@ -64,11 +64,11 @@ class App:
 app = App()
 
 
-documents = [doc1, doc2, doc3]
+test_documents = [doc1, doc2, doc3]
 
 print("\n#### DOCUMENT SIMILARITY ####\n")
-print(f"documents: {documents}")
-doc_sim = app.get_similarities(documents=documents)
+print(f"documents: {test_documents}")
+doc_sim = app.get_similarities(documents=test_documents)
 # doc_sim = app.get_similarities(documents=[doc1, doc2])
 
 

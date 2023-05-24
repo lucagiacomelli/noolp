@@ -1,8 +1,6 @@
 from typing import List
 import logging
 
-from nltk.corpus import stopwords
-import nltk
 import tiktoken
 
 from noolp.parser.parser_base import ParserBase
@@ -68,6 +66,7 @@ class TiktokenParser(ParserBase):
     def encoder_for_model(cls, model: str):
         """
         Returns an encoder to be used with specific model in the OpenAI API. Example 'gpt-4'
-        Check the different types of models here: https://github.com/openai/tiktoken/blob/3e8620030c68d2fd6d4ec6d38426e7a1983661f5/tiktoken/model.py
+        Check the different types of models here:
+        https://github.com/openai/tiktoken/blob/3e8620030c68d2fd6d4ec6d38426e7a1983661f5/tiktoken/model.py
         """
         return tiktoken.encoding_for_model(model)

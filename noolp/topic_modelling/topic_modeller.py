@@ -53,7 +53,7 @@ class TopicModeller:
     with the Singular Value Decomposition (SVD)
     """
 
-    def get_LSA_topics(self, documents):
+    def get_lsa_topics(self, documents):
 
         # raw documents to tf-idf matrix
         vectorizer = TfidfVectorizer(
@@ -64,11 +64,10 @@ class TopicModeller:
 
         svd_transformer = Pipeline([("tfidf", vectorizer), ("svd", svd_model)])
         svd_matrix = svd_transformer.fit_transform(documents)
-
         # use the matrix to find topics and similarities
         return
 
-    def get_LDA_topics(self, documents: List[List[str]]):
+    def get_lda_topics(self, documents: List[List[str]]):
 
         dictionary = corpora.Dictionary(documents)
 
@@ -95,7 +94,7 @@ class TopicModeller:
         if self.verbose:
             print(
                 [
-                    [(dictionary[id], freq) for id, freq in cp]
+                    [(dictionary[id_], freq) for id_, freq in cp]
                     for cp in (doc_term_entry for doc_term_entry in doc_term_matrix)
                 ]
             )
@@ -121,7 +120,7 @@ class TopicModeller:
         lemmas = tfidf_parser.lemmatize(
             include_stop_words=False, include_punctuation=False
         )
-        topics = self.get_LDA_topics(lemmas)
-        # lsa_topics = self.get_LSA_topics(sentences)
+        topics = self.get_lda_topics(lemmas)
+        # lsa_topics = self.get_lsa_topics(sentences)
 
         return topics
