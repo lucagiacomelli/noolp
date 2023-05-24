@@ -1,6 +1,6 @@
 from pytest import fixture
 
-from noolp.parser import ParserBase
+from noolp.parser.parser_base import ParserBase
 
 
 class TestParserBase:
