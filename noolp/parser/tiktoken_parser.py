@@ -31,7 +31,7 @@ class TiktokenParser(ParserBase):
         self,
         max_number_sentences: int = 50,
         max_tokens_per_sentence: int = 500,
-    ) -> List[List[str]]:
+    ) -> List[List[int]]:
         """
         Extracts the sentences from the document and, for each sentence, extract its tokens.
         It uses OpenAI tokenizer to extract the tokens.
