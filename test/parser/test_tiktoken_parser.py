@@ -1,3 +1,4 @@
+import pytest
 from pytest import fixture
 
 from noolp.parser.tiktoken_parser import TiktokenParser
@@ -35,6 +36,22 @@ class TestTiktokenParser:
     @fixture
     def instance_story(self):
         return TiktokenParser(document=self.story)
+
+    def test_tokenize_with_long_document(self):
+        document = (
+            "This is a long document with multiple sentences. " * 51
+        )  # 51 sentences
+        with pytest.raises(RuntimeError):
+            TiktokenParser(document=document).tokenize(
+                max_number_sentences=50, max_tokens_per_sentence=500
+            )
+
+    def test_tokenize_with_long_sentence(self):
+        document = "This is a long sentence " * 501 + "."
+        with pytest.raises(RuntimeError):
+            TiktokenParser(document=document).tokenize(
+                max_number_sentences=50, max_tokens_per_sentence=500
+            )
 
     def test_tokenize(self, instance):
         assert instance.tokenize() == [
