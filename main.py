@@ -1,5 +1,6 @@
 from typing import List
 
+from noolp.document_similarity.chatgpt_similarity import ChatGPTSimilarity
 from noolp.document_similarity.jaccard_similarity import JaccardSimilarity
 from noolp.document_similarity.wordnet_path_similarity import WordNetPathSimilarity
 from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
@@ -35,8 +36,8 @@ story = (
 class App:
     def get_similarities(self, documents: List[str]) -> dict:
         type_similarity_to_objects = {
-            "chatgpt_similarity": WordNetPathSimilarity(
-                documents=documents, verbose=False
+            "chatgpt_similarity": ChatGPTSimilarity(
+                openai_key="", documents=documents, verbose=False
             ),
             "wordnet_path_similarity": WordNetPathSimilarity(
                 documents=documents, verbose=False
@@ -73,6 +74,6 @@ doc_sim = app.get_similarities(documents=test_documents)
 
 
 print("\n#### TOPIC EXTRACTION ####\n")
-print(f"document: {story}")
+print(f"document: {story}\n")
 topicModeller = TopicModeller("topic modeller 1")
 print(f"Topics extracted: {topicModeller.extract_topics(story)}")

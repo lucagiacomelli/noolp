@@ -94,16 +94,6 @@ class ParserBase:
 
         return pos_tags_sentences
 
-    def _get_pos_tag_for_lemmatization(self, pos: str) -> str:
-        if pos.startswith("NN"):
-            return "n"
-        elif pos.startswith("VB"):
-            return "v"
-        elif pos.startswith("JJ"):
-            return "a"
-        else:
-            return "n"
-
     def lemmatize(
         self,
         include_stop_words: bool = True,
@@ -119,6 +109,16 @@ class ParserBase:
         :param include_reporting_verbs: if True, include the reporting verbs in the returned sentences
         :return:
         """
+
+        def _get_pos_tag_for_lemmatization(self, pos: str) -> str:
+            if pos.startswith("NN"):
+                return "n"
+            if pos.startswith("VB"):
+                return "v"
+            if pos.startswith("JJ"):
+                return "a"
+            return "n"
+
         lemmatizer = WordNetLemmatizer()
 
         pos_tags_sentences = self.part_of_speech_tags(
@@ -128,7 +128,7 @@ class ParserBase:
         lemmas_sentences = []
         for pos_tags_sentence in pos_tags_sentences:
             list_lemmas = [
-                lemmatizer.lemmatize(word, pos=self._get_pos_tag_for_lemmatization(pos))
+                lemmatizer.lemmatize(word, pos=_get_pos_tag_for_lemmatization(pos))
                 for word, pos in pos_tags_sentence
             ]
 
@@ -166,15 +166,3 @@ class ParserBase:
             sentence_with_only_lemmas = " ".join(lemmas_sentence)
             sentences.append(sentence_with_only_lemmas)
         return sentences
-
-    def most_common_terms(
-        self, include_stop_words: bool = True, include_punctuation: bool = True
-    ):
-        from gensim import corpora
-
-        lemmas_sentences = self.lemmatize(
-            include_stop_words=include_stop_words,
-            include_punctuation=include_punctuation,
-        )
-        dictionary = corpora.Dictionary(lemmas_sentences)
-        return dictionary.most_common()
