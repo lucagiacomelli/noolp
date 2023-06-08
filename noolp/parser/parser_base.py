@@ -110,7 +110,7 @@ class ParserBase:
         :return:
         """
 
-        def _get_pos_tag_for_lemmatization(self, pos: str) -> str:
+        def _get_pos_tag_for_lemmatization(pos: str) -> str:
             if pos.startswith("NN"):
                 return "n"
             if pos.startswith("VB"):
