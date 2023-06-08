@@ -1,3 +1,5 @@
+# consider to re-import gensim once the distribution size is reduced significantly
+# issue: https://github.com/RaRe-Technologies/gensim/issues/1783
 gensim==4.1.2
 nltk==3.6.6
 scikit-learn==1.0.1

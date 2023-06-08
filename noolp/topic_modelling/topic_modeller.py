@@ -1,14 +1,5 @@
 from typing import List
 
-import gensim
-from gensim import corpora
-
-# from gensim.models.coherencemodel import CoherenceModel
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
-from sklearn.pipeline import Pipeline
-
 from noolp.parser.tfidf_parser import TfdifParser
 
 
@@ -45,29 +36,10 @@ class TopicModeller:
 
         return story
 
-    """
-    The core idea of the Latent Semantic Analysis is to generate a document-term matrix
-    and decompose it into two matrices: document-topic and topic-term.
-    Document-term matrix: how many times the term j appears in the document i.
-    Because this matrix is sparse, we need a dimensionality reduction on the matrix. We do that
-    with the Singular Value Decomposition (SVD)
-    """
-
-    def get_lsa_topics(self, documents):
-
-        # raw documents to tf-idf matrix
-        vectorizer = TfidfVectorizer(
-            stop_words="english", use_idf=True, smooth_idf=True
-        )
-
-        svd_model = TruncatedSVD(n_components=100, algorithm="randomized", n_iter=10)
-
-        svd_transformer = Pipeline([("tfidf", vectorizer), ("svd", svd_model)])
-        svd_matrix = svd_transformer.fit_transform(documents)
-        # use the matrix to find topics and similarities
-        return
-
     def get_lda_topics(self, documents: List[List[str]]):
+
+        import gensim
+        from gensim import corpora
 
         dictionary = corpora.Dictionary(documents)
 
@@ -90,17 +62,6 @@ class TopicModeller:
             alpha="auto",
             per_word_topics=True,
         )
-
-        if self.verbose:
-            print(
-                [
-                    [(dictionary[id_], freq) for id_, freq in cp]
-                    for cp in (doc_term_entry for doc_term_entry in doc_term_matrix)
-                ]
-            )
-
-            print(lda_model.print_topics())
-            print("\nPerplexity: ", lda_model.log_perplexity(doc_term_matrix))
 
         # coherence_model_lda = CoherenceModel(model=lda_model, texts=documents, dictionary=dictionary, coherence='c_v')
         # coherence_lda = coherence_model_lda.get_coherence()

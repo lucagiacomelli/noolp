@@ -104,8 +104,10 @@ class WordNetPathSimilarity(DocSimilarity):
 
     def get_similarity(self) -> typing.List[typing.List[float]]:
         """
-        Path similarity is a similarity measure that finds the distance that is the length of the shortest path between two synsets
-        using WordNet. The similarity of the documents is the average of the length two paths.
+        Path similarity is a similarity measure that finds the distance that is the length of the shortest path between
+        two synsets using WordNet. The similarity of the documents is the average of the length two paths.
+
+        The algorithm used here is O(n^2) where n is the number of documents to compare
 
         :return the matrix of the similarities of each pair of documents.
 

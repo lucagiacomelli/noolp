@@ -11,7 +11,7 @@ from noolp.parser.tfidf_parser import TfdifParser
 
 class TFIDFSimilarity(DocSimilarity):
     """
-    Two documents are similar if they contains the same terms,
+    Two documents are similar if they contain the same terms,
     which are not repetitive in the entire corpus of documents.
     So the similarity of two documents is also affected by the other documents in the corpus.
 

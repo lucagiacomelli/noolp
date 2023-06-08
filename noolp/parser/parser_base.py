@@ -1,7 +1,6 @@
 import string
 from typing import List
 
-from gensim import corpora
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 import nltk
@@ -171,6 +170,8 @@ class ParserBase:
     def most_common_terms(
         self, include_stop_words: bool = True, include_punctuation: bool = True
     ):
+        from gensim import corpora
+
         lemmas_sentences = self.lemmatize(
             include_stop_words=include_stop_words,
             include_punctuation=include_punctuation,

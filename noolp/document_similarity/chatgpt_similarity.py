@@ -1,7 +1,5 @@
 from typing import List
 
-import numpy as np
-
 from noolp.document_similarity.doc_similarity import DocSimilarity
 
 
