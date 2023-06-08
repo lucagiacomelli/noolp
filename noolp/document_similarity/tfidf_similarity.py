@@ -15,6 +15,10 @@ class TFIDFSimilarity(DocSimilarity):
     which are not repetitive in the entire corpus of documents.
     So the similarity of two documents is also affected by the other documents in the corpus.
 
+    TF (Term Frequency): raw count of occurrences divided by number of words in the document
+    IDF (Inverse Document Frequency): calculate how common a word is amongst the corpus.
+        log(Number of documents/number of documents with that word)
+
     """
 
     def __init__(
@@ -40,7 +44,8 @@ class TFIDFSimilarity(DocSimilarity):
         tfidf_vectors = vectorizer.fit_transform(clean_documents)
         feature_names = vectorizer.get_feature_names_out()
 
-        if self.verbose:
+        if self.verbose or True:
+            print(clean_documents)
             print(feature_names)
             print(tfidf_vectors.toarray())
             print(tfidf_vectors.T.toarray())
@@ -48,6 +53,10 @@ class TFIDFSimilarity(DocSimilarity):
         return tfidf_vectors
 
     def get_similarity(self) -> List[List[float]]:
+        """
+        Calculate the similarity considering different distances between vectors of frequencies.
+        The main limitation of the TF-IDF similarity is Matrix Sparsity and the actual sense of each word.
+        """
 
         tfidf_similarities = []
         tfidf_vectors = self.get_vectors()
