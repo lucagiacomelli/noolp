@@ -4,7 +4,7 @@ from noolp.document_similarity.chatgpt_similarity import ChatGPTSimilarity
 from noolp.document_similarity.jaccard_similarity import JaccardSimilarity
 from noolp.document_similarity.wordnet_path_similarity import WordNetPathSimilarity
 from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
-from noolp.topic_modelling.topic_modeller import TopicModeller
+from noolp.topic_modelling.lda_topic_modeller import LDATopicModeller
 
 print("\nWelcome to NOOLP - A Natural Language Processing library!!\n")
 
@@ -75,5 +75,5 @@ doc_sim = app.get_similarities(documents=test_documents)
 
 print("\n#### TOPIC EXTRACTION ####\n")
 print(f"document: {story}\n")
-topicModeller = TopicModeller("topic modeller 1")
+topicModeller = LDATopicModeller("topic modeller 1")
 print(f"Topics extracted: {topicModeller.extract_topics(story)}")

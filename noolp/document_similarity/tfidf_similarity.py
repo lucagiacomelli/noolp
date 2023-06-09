@@ -44,7 +44,7 @@ class TFIDFSimilarity(DocSimilarity):
         tfidf_vectors = vectorizer.fit_transform(clean_documents)
         feature_names = vectorizer.get_feature_names_out()
 
-        if self.verbose or True:
+        if self.verbose:
             print(clean_documents)
             print(feature_names)
             print(tfidf_vectors.toarray())

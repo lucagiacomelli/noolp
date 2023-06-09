@@ -1,5 +1,11 @@
 # Noolp
-Natural Language Processing library.
+Natural Language Processing library. This library allows to resolve NLP problems using the state-of-the-art approaches.
+In particular, Noolp allows to execute the following tasks:
+- Simple Parsing and tokenization
+- Document similarity
+- Summarization
+- Topic modelling
+- Zero-shot classification
 
 ## Dependencies
 Check the `requirements.txt` for all the dependencies of this library.

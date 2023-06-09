@@ -41,10 +41,16 @@ class ParserBase:
     ) -> List[List[str]]:
         """
         Extracts the sentences from the document and, for each sentence, extract its tokens.
+        The tokens of this functions are words and punctuation.
+
+        The limitations of having tokens == words are:
+        - large vocabulary
+        - small flexibility
+        - hard processing of new terms
 
         :param include_stop_words:
         :param include_punctuation:
-        :return:
+        :return: list of words and punctuation for each document
 
         # TODO: parallelize the function and improve performance
         """
@@ -71,9 +77,9 @@ class ParserBase:
         Returns the Part of Speech tags for every sentence in the document.
         In order to extracts the tags the sentences are tokenized (considering punctuation and stop words).
 
-        :param include_stop_words:
-        :param include_punctuation:
-        :return:
+        :param include_stop_words: True if stopwords are included, False otherwise
+        :param include_punctuation: True if punctuation is included, False otherwise
+        :return: list of tuples (word, PoS) for each document
         """
 
         stop_words_set = set(stopwords.words(self.language))
@@ -102,6 +108,7 @@ class ParserBase:
     ) -> List[List[str]]:
         """
         Returns the lemmas of each sentence of the document.
+        Lemmas are the basic version of words (singular for noun, infinite for verbs, etc..).
         The lemmas are calculating from the part of speech tags.
 
         :param include_stop_words: if True, include the stop words in the returned lemmas
