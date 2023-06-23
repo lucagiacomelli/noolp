@@ -8,12 +8,14 @@ class LDATopicModeller(TopicModeller):
     def __init__(
         self,
         name,
+        document,
         number_topics=3,
         number_passes=20,
         words_per_topic=3,
         verbose: bool = False,
     ):
-        super().__init__(name, verbose)
+        super().__init__(name, document, verbose)
+
         self.number_topics = number_topics
         self.number_passes = number_passes
         self.words_per_topic = words_per_topic
@@ -73,8 +75,8 @@ class LDATopicModeller(TopicModeller):
             formatted=False,
         )
 
-    def extract_topics(self, story, use_lemmatization: bool = True):
-        story = self._clean_story(story)
+    def extract_topics(self, use_lemmatization: bool = True):
+        story = self._clean_story(self.document)
 
         tfidf_parser = TfdifParser(document=story, verbose=True)
 

@@ -14,6 +14,4 @@ class ChatGPTSimilarity(DocSimilarity):
         super().__init__(documents, language, verbose)
 
     def get_similarity(self) -> List[List[float]]:
-        """"""
-
-        return [[]]
+        raise NotImplementedError("ChatGPT similarity has not been implemented yet")

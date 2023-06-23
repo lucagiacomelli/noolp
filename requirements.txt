@@ -1,7 +1,19 @@
 # consider to re-import gensim once the distribution size is reduced significantly
 # issue: https://github.com/RaRe-Technologies/gensim/issues/1783
+# HuggingFace datasets
+datasets==2.13.0
 gensim==4.1.2
 nltk==3.6.6
+# tokenizer and de-tokenizer
+sacremoses==0.0.53
 scikit-learn==1.0.1
+# tokenizer and de-tokenizer
 tiktoken==0.4.0
+# Pytorch
+torch==2.0.0
+torchaudio==2.0.1
+torchtext==0.15.1
+torchvision==0.15.1
+# HuggingFace transformers
+transformers==4.30.2
 urllib3==1.26.15

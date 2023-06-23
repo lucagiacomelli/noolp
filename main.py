@@ -5,6 +5,7 @@ from noolp.document_similarity.jaccard_similarity import JaccardSimilarity
 from noolp.document_similarity.wordnet_path_similarity import WordNetPathSimilarity
 from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
 from noolp.topic_modelling.lda_topic_modeller import LDATopicModeller
+from noolp.topic_modelling.summarization import Summarizer
 
 print("\nWelcome to NOOLP - A Natural Language Processing library!!\n")
 
@@ -36,9 +37,9 @@ story = (
 class App:
     def get_similarities(self, documents: List[str]) -> dict:
         type_similarity_to_objects = {
-            "chatgpt_similarity": ChatGPTSimilarity(
-                openai_key="", documents=documents, verbose=False
-            ),
+            # "chatgpt_similarity": ChatGPTSimilarity(
+            #     openai_key="", documents=documents, verbose=False
+            # ),
             "wordnet_path_similarity": WordNetPathSimilarity(
                 documents=documents, verbose=False
             ),
@@ -70,10 +71,14 @@ test_documents = [doc1, doc2, doc3]
 print("\n#### DOCUMENT SIMILARITY ####\n")
 print(f"documents: {test_documents}")
 doc_sim = app.get_similarities(documents=test_documents)
-# doc_sim = app.get_similarities(documents=[doc1, doc2])
 
-
-print("\n#### TOPIC EXTRACTION ####\n")
+print("\n#### SUMMARIZATION ####\n")
 print(f"document: {story}\n")
-topicModeller = LDATopicModeller("topic modeller 1")
-print(f"Topics extracted: {topicModeller.extract_topics(story)}")
+summary = Summarizer(document=story).summarize()
+print(f"Example of summary: {summary}")
+
+
+# print("\n#### TOPIC EXTRACTION ####\n")
+# print(f"document: {story}\n")
+# topicModeller = LDATopicModeller("topic modeller 1")
+# print(f"Topics extracted: {topicModeller.extract_topics(story)}")
