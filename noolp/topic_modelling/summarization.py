@@ -4,7 +4,7 @@ from transformers import pipeline
 
 
 class Summarizer:
-    def __init__(self, document: str, model: str):
+    def __init__(self, document: str, model: str = "t5-small"):
         self.document = document
         self.model = model
 

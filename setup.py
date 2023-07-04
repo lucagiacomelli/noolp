@@ -21,5 +21,12 @@ setup(
     author_email="lucagiacomelli1604@gmail.com",
     description="Natural Language Processing library",
     keywords=["pip"],
-    install_requires=["gensim", "nltk", "scikit-learn"],
+    install_requires=[
+        "gensim>=4.1.2",
+        "nltk>=3.6.6",
+        "scikit-learn>=1.0.1",
+        "torch>=2.0.0",
+        "datasets>=2.13.0",
+        "transformers>=4.30.2",
+    ],
 )

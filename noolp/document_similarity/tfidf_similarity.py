@@ -66,6 +66,6 @@ class TFIDFSimilarity(DocSimilarity):
         if self.metric == "cosine":
             tfidf_similarities = np.dot(tfidf_vectors, tfidf_vectors.T).toarray()
         if self.metric == "euclidean":
-            tfidf_similarities = euclidean_distances(tfidf_vectors)
+            tfidf_similarities = 1 - euclidean_distances(tfidf_vectors)
 
         return tfidf_similarities

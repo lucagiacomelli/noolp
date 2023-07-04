@@ -72,10 +72,10 @@ print("\n#### DOCUMENT SIMILARITY ####\n")
 print(f"documents: {test_documents}")
 doc_sim = app.get_similarities(documents=test_documents)
 
-print("\n#### SUMMARIZATION ####\n")
-print(f"document: {story}\n")
-summary = Summarizer(document=story).summarize()
-print(f"Example of summary: {summary}")
+# print("\n#### SUMMARIZATION ####\n")
+# print(f"document: {story}\n")
+# summary = Summarizer(document=story).summarize()
+# print(f"Example of summary: {summary}")
 
 
 # print("\n#### TOPIC EXTRACTION ####\n")
