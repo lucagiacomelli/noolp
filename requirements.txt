@@ -7,6 +7,8 @@ nltk==3.6.6
 # tokenizer and de-tokenizer
 sacremoses==0.0.53
 scikit-learn==1.0.1
+# Python framework for state-of-the-art sentence, text and image embeddings
+sentence_transformers
 # tokenizer and de-tokenizer
 tiktoken==0.4.0
 # Pytorch
