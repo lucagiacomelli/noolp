@@ -1,6 +1,7 @@
 from typing import List
 
 from noolp.document_similarity.chatgpt_similarity import ChatGPTSimilarity
+from noolp.document_similarity.embedding_similarity import EmbeddingSimilarity
 from noolp.document_similarity.jaccard_similarity import JaccardSimilarity
 from noolp.document_similarity.wordnet_path_similarity import WordNetPathSimilarity
 from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
@@ -40,6 +41,9 @@ class App:
             # "chatgpt_similarity": ChatGPTSimilarity(
             #     openai_key="", documents=documents, verbose=False
             # ),
+            "embedding_similarity": EmbeddingSimilarity(
+                documents=documents, verbose=False
+            ),
             "wordnet_path_similarity": WordNetPathSimilarity(
                 documents=documents, verbose=False
             ),
@@ -70,7 +74,10 @@ test_documents = [doc1, doc2, doc3]
 
 print("\n#### DOCUMENT SIMILARITY ####\n")
 print(f"documents: {test_documents}")
-doc_sim = app.get_similarities(documents=test_documents)
+# doc_sim = app.get_similarities(documents=test_documents)
+
+pair = EmbeddingSimilarity(documents=test_documents, verbose=False).most_similar_pair()
+print(pair)
 
 # print("\n#### SUMMARIZATION ####\n")
 # print(f"document: {story}\n")

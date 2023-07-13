@@ -41,3 +41,19 @@ class DocSimilarity:
         This function is overwritten
         """
         pass
+
+    def most_similar_pair(self) -> dict:
+        """
+        Return the indexes and the score of the most similar pair
+        among all the list of documents.
+        """
+
+        similarity_matrix = self.get_similarity()
+        pairs = []
+        for i in range(len(similarity_matrix) - 1):
+            for j in range(i + 1, len(similarity_matrix)):
+                pairs.append({"index": [i, j], "score": similarity_matrix[i][j]})
+
+        # Sort scores in decreasing order
+        pairs = sorted(pairs, key=lambda x: x["score"], reverse=True)
+        return pairs[0]

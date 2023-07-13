@@ -4,8 +4,7 @@ applications = [
         "questions": [
             "question 0",
             "question 1",
-
-        ]
+        ],
     },
     {
         "program": "Mass",
@@ -13,6 +12,6 @@ applications = [
             "question 0",
             "question 1",
             "question N",
-        ]
+        ],
     },
 ]
