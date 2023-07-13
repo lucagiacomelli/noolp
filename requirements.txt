@@ -1,8 +1,8 @@
-# consider to re-import gensim once the distribution size is reduced significantly
-# issue: https://github.com/RaRe-Technologies/gensim/issues/1783
 # HuggingFace datasets
 datasets==2.13.0
-gensim==4.1.2
+# consider to re-import gensim once the distribution size is reduced significantly
+# issue: https://github.com/RaRe-Technologies/gensim/issues/1783
+# gensim==4.1.2
 nltk==3.6.6
 # tokenizer and de-tokenizer
 sacremoses==0.0.53

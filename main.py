@@ -5,7 +5,6 @@ from noolp.document_similarity.embedding_similarity import EmbeddingSimilarity
 from noolp.document_similarity.jaccard_similarity import JaccardSimilarity
 from noolp.document_similarity.wordnet_path_similarity import WordNetPathSimilarity
 from noolp.document_similarity.tfidf_similarity import TFIDFSimilarity
-from noolp.topic_modelling.lda_topic_modeller import LDATopicModeller
 from noolp.topic_modelling.summarization import Summarizer
 
 print("\nWelcome to NOOLP - A Natural Language Processing library!!\n")
@@ -74,18 +73,16 @@ test_documents = [doc1, doc2, doc3]
 
 print("\n#### DOCUMENT SIMILARITY ####\n")
 print(f"documents: {test_documents}")
-# doc_sim = app.get_similarities(documents=test_documents)
+doc_sim = app.get_similarities(documents=test_documents)
 
 pair = EmbeddingSimilarity(documents=test_documents, verbose=False).most_similar_pair()
-print(pair)
+print(f"\nMost similar pair: {pair}")
 
 # print("\n#### SUMMARIZATION ####\n")
 # print(f"document: {story}\n")
 # summary = Summarizer(document=story).summarize()
 # print(f"Example of summary: {summary}")
 
-
 # print("\n#### TOPIC EXTRACTION ####\n")
 # print(f"document: {story}\n")
-# topicModeller = LDATopicModeller("topic modeller 1")
 # print(f"Topics extracted: {topicModeller.extract_topics(story)}")

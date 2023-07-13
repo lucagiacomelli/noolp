@@ -22,7 +22,6 @@ setup(
     description="Natural Language Processing library",
     keywords=["pip"],
     install_requires=[
-        "gensim>=4.1.2",
         "nltk>=3.6.6",
         "scikit-learn>=1.0.1",
         "torch>=2.0.0",

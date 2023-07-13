@@ -22,6 +22,9 @@ class EmbeddingSimilarity(DocSimilarity):
             If not, find another model or fine-tuned and re-train.
         2. Ensure embedding space is the same for both documents and queries
         3. Convert the documents in embeddings and store in a Vector store (use a library or a Vector DB).
+
+        TODO: change from sentence_transformers to hugging face transformers,
+          because the sentence_transformers package seems not not be maintained anymore
         """
 
         # Compute embeddings
