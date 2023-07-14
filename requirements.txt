@@ -12,10 +12,10 @@ sentence_transformers
 # tokenizer and de-tokenizer
 tiktoken==0.4.0
 # Pytorch
-torch==2.0.0
-torchaudio==2.0.1
-torchtext==0.15.1
-torchvision==0.15.1
+torch==2.0.0+cpu
+torchaudio==2.0.1+cpu
+torchtext==0.15.1+cpu
+torchvision==0.15.1+cpu
 # HuggingFace transformers
 transformers==4.30.2
 urllib3==1.26.15

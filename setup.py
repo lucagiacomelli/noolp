@@ -24,7 +24,7 @@ setup(
     install_requires=[
         "nltk>=3.6.6",
         # "scikit-learn>=1.0.1",
-        "torch>=2.0.0",
+        "torch>=2.0.0+cpu",
         "datasets>=2.13.0",
         "transformers>=4.30.2",
     ],
