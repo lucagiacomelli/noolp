@@ -43,24 +43,31 @@ class TestTiktokenParser:
         )  # 51 sentences
         with pytest.raises(RuntimeError):
             TiktokenParser(document=document).tokenize(
-                max_number_sentences=50, max_tokens_per_sentence=500
+                max_number_sentences=50,
+                max_tokens_per_sentence=500,
+                split_sentences=True,
             )
 
     def test_tokenize_with_long_sentence(self):
         document = "This is a long sentence " * 501 + "."
         with pytest.raises(RuntimeError):
             TiktokenParser(document=document).tokenize(
-                max_number_sentences=50, max_tokens_per_sentence=500
+                max_number_sentences=50,
+                max_tokens_per_sentence=500,
+                split_sentences=True,
             )
 
     def test_tokenize(self, instance):
-        assert instance.tokenize() == [
+        assert instance.tokenize(split_sentences=True) == [
             [1115, 374, 264, 734, 311, 1296, 2246, 1853, 38723, 13]
         ]
 
     def test_tokenize__more_sentences(self, instance_story):
-        assert len(instance_story.tokenize()) == 17
-        assert len(instance_story.tokenize()[0]) == 25
+        assert len(instance_story.tokenize(split_sentences=True)) == 17
+        assert len(instance_story.tokenize(split_sentences=True)[0]) == 25
 
     def test_number_tokens(self, instance_story):
-        assert instance_story.number_tokens() == 388
+        assert instance_story.number_tokens() == 389
+
+    def test_cost_to_run(self, instance_story):
+        assert instance_story.cost_to_run() == 0.000778

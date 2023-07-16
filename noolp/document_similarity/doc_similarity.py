@@ -42,7 +42,7 @@ class DocSimilarity:
         """
         pass
 
-    def most_similar_pair(self) -> dict:
+    def most_similar_pairs(self, index_top_pairs: int = 3) -> list:
         """
         Return the indexes and the score of the most similar pair
         among all the list of documents.
@@ -56,4 +56,11 @@ class DocSimilarity:
 
         # Sort scores in decreasing order
         pairs = sorted(pairs, key=lambda x: x["score"], reverse=True)
-        return pairs[0]
+        return pairs[:index_top_pairs]
+
+    def most_similar_pair(self) -> dict:
+        """
+        Return the indexes and the score of the most similar pair
+        among all the list of documents.
+        """
+        return self.most_similar_pairs()[0]

@@ -20,7 +20,9 @@ class TiktokenParser(ParserBase):
     ):
         super().__init__(document, language, verbose)
         try:
+            self.model = model
             self.tokenizer = tiktoken.encoding_for_model(model)
+            self.price_token = {"gpt-3.5-turbo-0301": 0.002}
         except KeyError:
             logger.warning("Warning: model not found. Using cl100k_base encoding.")
             self.tokenizer = tiktoken.get_encoding("cl100k_base")
@@ -29,6 +31,7 @@ class TiktokenParser(ParserBase):
         self,
         max_number_sentences: int = 50,
         max_tokens_per_sentence: int = 500,
+        split_sentences: bool = False,
     ) -> List[List[int]]:
         """
         Extracts the sentences from the document and, for each sentence, extract its tokens.
@@ -41,6 +44,9 @@ class TiktokenParser(ParserBase):
         :param max_tokens_per_sentence: raise an Exception if a sentence in the document is too long
         :return:
         """
+
+        if not split_sentences:
+            return [self.tokenizer.encode(" " + self.document)]
 
         sentences = self.extract_sentences()
         if len(sentences) > max_number_sentences:
@@ -61,6 +67,11 @@ class TiktokenParser(ParserBase):
     def number_tokens(self):
         tokens = self.tokenize()
         return sum([len(token_list) for token_list in tokens])
+
+    def cost_to_run(self) -> float:
+        if self.model not in self.price_token:
+            raise AttributeError("The price for the model is not known")
+        return self.number_tokens() / 1000 * self.price_token[self.model]
 
     @classmethod
     def encoder_for_model(cls, model: str):

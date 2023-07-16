@@ -10,4 +10,4 @@ class TestDocSimilarity:
 
     @fixture
     def instance(self):
-        return DocSimilarity(document1=self.doc1, document2=self.doc2)
+        return DocSimilarity(documents=[self.doc1, self.doc2])

@@ -6,6 +6,10 @@ from noolp.document_similarity.doc_similarity import DocSimilarity
 
 
 class EmbeddingSimilarity(DocSimilarity):
+    """
+    Models: 'all-MiniLM-L6-v2', 'distilbert-base-nli-stsb-mean-tokens'
+    """
+
     def __init__(
         self,
         documents: List[str],
